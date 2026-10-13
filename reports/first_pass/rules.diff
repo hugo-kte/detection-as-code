@@ -325,3 +325,14 @@ diff -ruN a/privilege_escalation/service_binary_path_modification.yml b/privileg
      condition: selection
  falsepositives:
      - Administrators reconfigure services; correlate with the service and the new path.
+diff -ruN a/privilege_escalation/uac_bypass_fodhelper.yml b/privilege_escalation/uac_bypass_fodhelper.yml
+--- a/privilege_escalation/uac_bypass_fodhelper.yml	2026-10-13 13:59:15
++++ b/privilege_escalation/uac_bypass_fodhelper.yml	2026-10-13 15:07:46
+@@ -20,7 +20,6 @@
+     selection:
+         TargetObject|contains:
+             - '\ms-settings\Shell\Open\command'
+-            - '\ms-settings\shell\open\command'
+             - '\mscfile\shell\open\command'
+     condition: selection
+ falsepositives:

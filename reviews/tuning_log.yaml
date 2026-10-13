@@ -109,6 +109,10 @@
 # eventlog_service_disabled_powershell had netprofm's dependency on the Event Log backwards. Each
 # now describes what the rule matches.
 
+# No-op cleanup made in review (identical matches; visible in rules.diff): uac_bypass_fodhelper
+# listed the ms-settings key twice, in two letter cases, although Sigma matching is
+# case-insensitive.
+
 # Rejected while tuning (caught by the regression run before being kept):
 # - narrowing the esentutl selection to '\config\sam' lost a true positive: the recorded command
 #   uses forward slashes;

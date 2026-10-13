@@ -20,7 +20,6 @@ detection:
     selection:
         TargetObject|contains:
             - '\ms-settings\Shell\Open\command'
-            - '\ms-settings\shell\open\command'
             - '\mscfile\shell\open\command'
     condition: selection
 falsepositives:
