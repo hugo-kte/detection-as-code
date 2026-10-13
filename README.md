@@ -202,6 +202,25 @@ platform.
   (`rubeus_kerberos_theft`, `network_share_session_discovery`, `powershell_download_cradle`, the
   last of which does fire in 14 Empire scenarios labelled with other techniques).
 
+### Known limitations before production
+
+The protocol freezes rule logic after the first pass (bug fixes and benign filters only), and the
+recordings hold too little benign activity to measure the noise below, so these are v2 work, to be
+evaluated on new data rather than tuned in-sample:
+
+* **`dcom_lateral_execution`** treats `explorer.exe` as a DCOM server (the ShellWindows route). On a
+  workstation explorer.exe starts `cmd.exe /c`, PowerShell and `rundll32.exe` all day; only
+  argument-less shells are filtered, so the rule needs a DCOM-specific signal before production.
+* **`create_remote_thread_injection`** alerts at level `high` on any Sysmon 8 event outside five
+  system processes, and filters those by image name only (`\csrss.exe`), so a binary with the same
+  name in another folder is excluded too. It needs full-path filters and a lower level.
+* **`account_discovery_net`** matches `contains 'user'`, which is also true of
+  `net use \\host\share /user:...` (mapping a share with credentials) and of `net user /add`
+  (account creation, seen in the review).
+* **`eventlog_service_disabled_powershell`** also covers Defender services (`WinDefend`,
+  `SecurityHealthService`), which is T1562.001 and not tagged; its `netprofm` target only matches
+  the preparatory step these recordings take before stopping the Event Log.
+
 ## Rule catalogue
 
 | Tactic | Rule | ATT&CK | Telemetry | Own-technique recordings detected |
