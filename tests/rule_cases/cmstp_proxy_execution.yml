@@ -3,13 +3,23 @@ defaults:
   Channel: Microsoft-Windows-Sysmon/Operational
   EventID: 1
 cases:
-- name: silent flag
+- name: silent install from an INF
   match: true
   event:
     Image: C:\Windows\System32\cmstp.exe
+    CommandLine: x /s C:\Temp\x.inf
+- name: 'regression: silent flag without an INF (value list read as OR)'
+  match: false
+  event:
+    Image: C:\Windows\System32\cmstp.exe
     CommandLine: x /s x
-- name: other binary with the same flag
+- name: INF without the silent flag
+  match: false
+  event:
+    Image: C:\Windows\System32\cmstp.exe
+    CommandLine: x C:\Temp\x.inf
+- name: other binary with the same arguments
   match: false
   event:
     Image: C:\Windows\System32\notepad.exe
-    CommandLine: x /s x
+    CommandLine: x /s C:\Temp\x.inf

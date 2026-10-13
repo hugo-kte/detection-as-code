@@ -44,6 +44,17 @@
     45 first-pass IPC$ alerts. Five of the 75 first-pass detections (remote service control over
     the svcctl pipe) came only from IPC$ matches; they are honest misses after the fix.
 
+- rule: cmstp_proxy_execution
+  kind: bug-fix
+  change: >-
+    The silent flag and the INF argument were written as a value list, which Sigma ORs: any
+    cmstp.exe command line with an INF, or with any `/s` token, matched. The description requires
+    both, so the list is now `contains|all`. The unit test had been written to the code (a
+    `/s`-only event was a positive case); that event is now the regression case.
+  evidence: >-
+    Found in code review after the first evaluation, not by the regression run: the recorded CMSTP
+    execution carries both tokens, so no alert changed on this data.
+
 - rule: dcsync_replication
   kind: benign-filter
   change: Exclude computer accounts (SubjectUserName ending in $).

@@ -18,7 +18,7 @@ logsource:
 detection:
     selection:
         Image|endswith: '\cmstp.exe'
-        CommandLine|contains:
+        CommandLine|contains|all:
             - '/s'
             - '.inf'
     condition: selection
