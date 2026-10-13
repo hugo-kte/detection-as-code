@@ -2,9 +2,10 @@ title: Scheduled Task Created or Updated
 id: 0761f1f9-44d5-4bb5-9558-6a7dd7381e26
 status: experimental
 description: |
-    Detects creation or update of a scheduled task, a widely used persistence and remote-execution mechanism.
-    It covers both the Security audit event for task registration and command-line creation with
-    schtasks, so it fires whichever telemetry is available.
+    Detects creation or update of a scheduled task (Security events 4698 and 4702), a widely used
+    persistence and remote-execution mechanism. The audit event sees a task whichever API registered
+    it, remote RPC included; command-line creation with schtasks is covered by the companion rule
+    scheduled_task_schtasks_create. Requires the "Other Object Access Events" audit subcategory.
 references:
     - https://attack.mitre.org/techniques/T1053/005/
 author: Hugo

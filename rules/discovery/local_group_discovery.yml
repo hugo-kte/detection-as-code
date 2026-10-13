@@ -2,9 +2,10 @@ title: Local or Domain Group Membership Discovery via net
 id: 4a1854b2-c9cb-451d-9c57-1038080a14ab
 status: experimental
 description: |
-    Detects enumeration of privileged group membership with the net utility (local Administrators or
-    the Domain Admins group). Attackers map who holds privileged access early in an intrusion to plan
-    escalation and lateral movement.
+    Detects group enumeration with net group / net localgroup, the usual way to list who holds
+    privileged access (local Administrators, Domain Admins). Attackers map group membership early in
+    an intrusion to plan escalation and lateral movement. The rule matches any net group or
+    localgroup command, membership changes included, not only privileged groups.
 references:
     - https://attack.mitre.org/techniques/T1069/001/
     - https://attack.mitre.org/techniques/T1069/002/

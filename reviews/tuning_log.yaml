@@ -6,7 +6,7 @@
 #   bug-fix        the rule did not implement its own description
 #   benign-filter  exclude activity an analyst reviewed as benign (reviews/off_target.yaml)
 # No rule was added and no logic was widened to catch a missed recording.
-# Every change is pinned by a test case in tests/rule_cases/ that fails on the first-pass rule.
+# Every logic change is pinned by a test case in tests/rule_cases/ that fails on the first-pass rule.
 
 - rule: registry_hive_dump
   kind: bug-fix
@@ -95,6 +95,12 @@
   kind: benign-filter
   change: Exclude the Microsoft Monitoring Agent (MonitoringHost.exe parent) and the built-in network diagnostics script gatherNetworkInfo.vbs.
   evidence: 10 alerts.
+
+# Documentation-only corrections made in review (no logic change; visible in rules.diff): the
+# descriptions of dcsync_replication, disable_eventlog_via_service_registry, local_group_discovery
+# and scheduled_task_creation claimed coverage their logic does not have, and the one of
+# eventlog_service_disabled_powershell had netprofm's dependency on the Event Log backwards. Each
+# now describes what the rule matches.
 
 # Rejected while tuning (caught by the regression run before being kept):
 # - narrowing the esentutl selection to '\config\sam' lost a true positive: the recorded command

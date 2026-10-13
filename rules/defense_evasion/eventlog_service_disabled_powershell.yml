@@ -2,10 +2,10 @@ title: Logging Service Disabled via PowerShell Service Cmdlet
 id: 2b7d9c14-8e3a-4c77-9f2b-3a1c6e9d4f22
 status: experimental
 description: |
-    Detects PowerShell stopping or disabling the Windows Event Log service, Sysmon or another security
-    service, including the indirect trick of disabling a service the Event Log depends on (for example
-    netprofm). Turning off the logging service blinds host-based detection. Requires script-block
-    logging.
+    Detects PowerShell stopping or disabling the Windows Event Log service, Sysmon or another
+    security service, including disabling netprofm, a service that depends on the Event Log, as the
+    first step of stopping it. Turning off the logging service blinds host-based detection. Requires
+    script-block logging.
 references:
     - https://attack.mitre.org/techniques/T1562/002/
 author: Hugo

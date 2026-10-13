@@ -1,7 +1,25 @@
 diff -ruN a/credential_access/dcsync_replication.yml b/credential_access/dcsync_replication.yml
 --- a/credential_access/dcsync_replication.yml	2026-10-13 13:03:09
 +++ b/credential_access/dcsync_replication.yml	2026-10-13 13:03:10
-@@ -24,7 +24,9 @@
+@@ -2,11 +2,12 @@
+ id: 2c14c4f0-7bfe-4886-a571-53382d6aa17e
+ status: experimental
+ description: |
+-    Detects a directory-service object access that requests the replication control-access rights
+-    (DS-Replication-Get-Changes and -All). Requesting these rights is how a principal asks a domain
+-    controller to replicate secrets; when it originates anywhere other than a domain controller or a
+-    known replication account it indicates credential theft by replication. Requires the "Directory
+-    Service Access" audit subcategory on domain controllers.
++    Detects a directory-service object access that requests a replication control-access right
++    (DS-Replication-Get-Changes, DS-Replication-Get-Changes-All or DS-Install-Replica). Requesting
++    these rights is how a principal asks a domain controller to replicate secrets; when it
++    originates anywhere other than a domain controller or a known replication account it indicates
++    credential theft by replication. Requires the "Directory Service Access" audit subcategory on
++    domain controllers.
+ references:
+     - https://attack.mitre.org/techniques/T1003/006/
+ author: Hugo
+@@ -24,7 +25,9 @@
              - '1131f6aa-9c07-11d1-f79f-00c04fc2dcd2'
              - '1131f6ad-9c07-11d1-f79f-00c04fc2dcd2'
              - '9923a32a-3607-11d2-b9be-0000f87a36b2'
@@ -83,6 +101,40 @@ diff -ruN a/defense_evasion/cmstp_proxy_execution.yml b/defense_evasion/cmstp_pr
              - '/s'
              - '.inf'
      condition: selection
+diff -ruN a/defense_evasion/disable_eventlog_via_service_registry.yml b/defense_evasion/disable_eventlog_via_service_registry.yml
+--- a/defense_evasion/disable_eventlog_via_service_registry.yml	2026-10-13 13:59:15
++++ b/defense_evasion/disable_eventlog_via_service_registry.yml	2026-10-13 14:54:04
+@@ -2,9 +2,9 @@
+ id: 89440b4e-a032-4e43-811a-2c1c26f9a457
+ status: experimental
+ description: |
+-    Detects the Start value of the Windows Event Log service (or a dependency) being set to 4
+-    (disabled) in the registry, which stops logging after the next reboot. Blinding the event log is a
+-    defense-evasion step that precedes or hides further activity.
++    Detects the Start value of the Windows Event Log service being set to 4 (disabled) in the
++    registry, which stops logging after the next reboot. Blinding the event log is a defense-evasion
++    step that precedes or hides further activity.
+ references:
+     - https://attack.mitre.org/techniques/T1562/002/
+ author: Hugo
+diff -ruN a/defense_evasion/eventlog_service_disabled_powershell.yml b/defense_evasion/eventlog_service_disabled_powershell.yml
+--- a/defense_evasion/eventlog_service_disabled_powershell.yml	2026-10-13 13:59:15
++++ b/defense_evasion/eventlog_service_disabled_powershell.yml	2026-10-13 14:54:04
+@@ -2,10 +2,10 @@
+ id: 2b7d9c14-8e3a-4c77-9f2b-3a1c6e9d4f22
+ status: experimental
+ description: |
+-    Detects PowerShell stopping or disabling the Windows Event Log service, Sysmon or another security
+-    service, including the indirect trick of disabling a service the Event Log depends on (for example
+-    netprofm). Turning off the logging service blinds host-based detection. Requires script-block
+-    logging.
++    Detects PowerShell stopping or disabling the Windows Event Log service, Sysmon or another
++    security service, including disabling netprofm, a service that depends on the Event Log, as the
++    first step of stopping it. Turning off the logging service blinds host-based detection. Requires
++    script-block logging.
+ references:
+     - https://attack.mitre.org/techniques/T1562/002/
+ author: Hugo
 diff -ruN a/defense_evasion/netsh_firewall_rule_added.yml b/defense_evasion/netsh_firewall_rule_added.yml
 --- a/defense_evasion/netsh_firewall_rule_added.yml	2026-10-13 13:03:09
 +++ b/defense_evasion/netsh_firewall_rule_added.yml	2026-10-13 13:03:10
@@ -118,6 +170,23 @@ diff -ruN a/defense_evasion/wmic_xsl_script_execution.yml b/defense_evasion/wmic
  falsepositives:
      - Custom administrative XSL formatters are uncommon but possible; baseline them.
  level: medium
+diff -ruN a/discovery/local_group_discovery.yml b/discovery/local_group_discovery.yml
+--- a/discovery/local_group_discovery.yml	2026-10-13 13:59:15
++++ b/discovery/local_group_discovery.yml	2026-10-13 14:54:04
+@@ -2,9 +2,10 @@
+ id: 4a1854b2-c9cb-451d-9c57-1038080a14ab
+ status: experimental
+ description: |
+-    Detects enumeration of privileged group membership with the net utility (local Administrators or
+-    the Domain Admins group). Attackers map who holds privileged access early in an intrusion to plan
+-    escalation and lateral movement.
++    Detects group enumeration with net group / net localgroup, the usual way to list who holds
++    privileged access (local Administrators, Domain Admins). Attackers map group membership early in
++    an intrusion to plan escalation and lateral movement. The rule matches any net group or
++    localgroup command, membership changes included, not only privileged groups.
+ references:
+     - https://attack.mitre.org/techniques/T1069/001/
+     - https://attack.mitre.org/techniques/T1069/002/
 diff -ruN a/execution/wscript_cscript_execution.yml b/execution/wscript_cscript_execution.yml
 --- a/execution/wscript_cscript_execution.yml	2026-10-13 13:03:09
 +++ b/execution/wscript_cscript_execution.yml	2026-10-13 13:03:10
@@ -201,7 +270,21 @@ diff -ruN a/persistence/run_key_modification.yml b/persistence/run_key_modificat
 diff -ruN a/persistence/scheduled_task_creation.yml b/persistence/scheduled_task_creation.yml
 --- a/persistence/scheduled_task_creation.yml	2026-10-13 13:03:10
 +++ b/persistence/scheduled_task_creation.yml	2026-10-13 13:03:10
-@@ -21,8 +21,16 @@
+@@ -2,9 +2,10 @@
+ id: 0761f1f9-44d5-4bb5-9558-6a7dd7381e26
+ status: experimental
+ description: |
+-    Detects creation or update of a scheduled task, a widely used persistence and remote-execution mechanism.
+-    It covers both the Security audit event for task registration and command-line creation with
+-    schtasks, so it fires whichever telemetry is available.
++    Detects creation or update of a scheduled task (Security events 4698 and 4702), a widely used
++    persistence and remote-execution mechanism. The audit event sees a task whichever API registered
++    it, remote RPC included; command-line creation with schtasks is covered by the companion rule
++    scheduled_task_schtasks_create. Requires the "Other Object Access Events" audit subcategory.
+ references:
+     - https://attack.mitre.org/techniques/T1053/005/
+ author: Hugo
+@@ -21,8 +22,16 @@
          EventID:
              - 4698
              - 4702

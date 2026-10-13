@@ -2,11 +2,12 @@ title: Active Directory Replication From Non-DC (DCSync)
 id: 2c14c4f0-7bfe-4886-a571-53382d6aa17e
 status: experimental
 description: |
-    Detects a directory-service object access that requests the replication control-access rights
-    (DS-Replication-Get-Changes and -All). Requesting these rights is how a principal asks a domain
-    controller to replicate secrets; when it originates anywhere other than a domain controller or a
-    known replication account it indicates credential theft by replication. Requires the "Directory
-    Service Access" audit subcategory on domain controllers.
+    Detects a directory-service object access that requests a replication control-access right
+    (DS-Replication-Get-Changes, DS-Replication-Get-Changes-All or DS-Install-Replica). Requesting
+    these rights is how a principal asks a domain controller to replicate secrets; when it
+    originates anywhere other than a domain controller or a known replication account it indicates
+    credential theft by replication. Requires the "Directory Service Access" audit subcategory on
+    domain controllers.
 references:
     - https://attack.mitre.org/techniques/T1003/006/
 author: Hugo
