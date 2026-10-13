@@ -94,7 +94,7 @@ def write_report(
             "## First pass vs. after tuning",
             "",
             "The first pass is the rule set as written, before looking at any result. Tuning fixed "
-            "two classes of rule bugs and added benign-noise filters (see "
+            "rule bugs and added benign-noise filters (see "
             "`reviews/tuning_log.yaml`; the exact rule diff is in "
             "`reports/first_pass/rules.diff`).",
             "",

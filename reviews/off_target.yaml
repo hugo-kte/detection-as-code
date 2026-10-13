@@ -96,7 +96,7 @@
   signature: 'SourceImage=powershell.exe | GrantedAccess=0x1010'
   verdict: attack
   technique: T1550.002
-  rationale: 'In-memory tooling opening LSASS with write rights to patch it for over-pass-the-hash, the technique the recording is labelled with (T1550.002).'
+  rationale: 'In-memory tooling (unbacked frames in the CallTrace) opening LSASS with read rights, the read half of the over-pass-the-hash patch the recording is labelled with (T1550.002).'
 - rule: lsass_memory_access
   signature: 'SourceImage=powershell.exe | GrantedAccess=0x1038'
   verdict: attack

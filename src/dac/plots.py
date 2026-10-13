@@ -180,7 +180,7 @@ def alerts_before_after(first: dict[str, Any], final: dict[str, Any], path: Path
     )
     _titles(
         ax,
-        "Fixing two rule bugs and filtering benign noise",
+        "Fixing rule bugs and filtering benign noise",
         "Every off-target alert signature reviewed (reviews/off_target.yaml); "
         "filters are in-sample",
     )
@@ -238,7 +238,7 @@ def rule_matrix(
     _titles(
         ax,
         "Where each rule fires",
-        "Recordings with at least one alert, by recording tactic; * includes a labelled detection",
+        "Recordings with at least one alert, by recording tactic; * includes an expected detection",
         offset=44,
     )
     return _save(fig, path)
