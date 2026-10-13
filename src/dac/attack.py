@@ -3,8 +3,8 @@
 pySigma 1.x can validate ``attack.*`` tags, but only by downloading the ATT&CK STIX bundle at
 runtime. CI runs offline and the project pins its data, so the techniques and tactics this
 repository actually uses are vendored here instead. The table covers every technique exercised by
-the recordings plus every technique a rule is tagged with; :func:`dac.cli` has a helper to check it
-stays in sync with the rules.
+the recordings plus every technique a rule or a review verdict is tagged with; ``dac lint`` rejects
+a rule tag missing from it, and a test does the same for review verdicts.
 
 Source: MITRE ATT&CK Enterprise (https://attack.mitre.org/). ATT&CK is released by The MITRE
 Corporation under the terms at https://attack.mitre.org/resources/legal-and-branding/terms-of-use/.
