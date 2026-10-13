@@ -3,15 +3,18 @@ DATA    ?= data/security-datasets
 export PYTHONPATH := src
 
 .DEFAULT_GOAL := help
-.PHONY: help install download lint rules-lint test evaluate first-pass convert coverage all format clean
+.PHONY: help install lock download lint rules-lint test evaluate first-pass convert coverage all format clean
 
 help: ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-12s\033[0m %s\n", $$1, $$2}'
 
-install: ## Create .venv and install the package with dev tools
+install: ## Create .venv and install the package with dev tools (versions pinned by constraints.txt)
 	python3 -m venv .venv
 	$(PY) -m pip install --upgrade pip
-	$(PY) -m pip install -e ".[dev]"
+	$(PY) -m pip install -e ".[dev]" -c constraints.txt
+
+lock: ## Re-pin constraints.txt to the latest versions pyproject.toml allows (needs uv)
+	uv pip compile pyproject.toml --extra dev --universal --python-version 3.11 -o constraints.txt
 
 download: ## Fetch the pinned OTRF Security-Datasets recordings (MIT), verify each git SHA
 	$(PY) -m dac download -o $(DATA)

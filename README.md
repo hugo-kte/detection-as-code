@@ -280,7 +280,7 @@ covered.
 
 ```bash
 git clone https://github.com/hugo-kte/detection-as-code.git && cd detection-as-code
-make install
+make install               # .venv with the dependency versions pinned in constraints.txt
 make rules-lint            # pySigma validators + project checks
 make test                  # 199 tests, no dataset needed
 make convert               # SPL / Lucene / ES|QL / KQL -> reports/queries/
@@ -323,6 +323,7 @@ src/dac/
 ├── attack.py                vendored slice of ATT&CK (techniques, tactics)
 └── report.py, plots.py, cli.py
 configs/security_datasets.json   pinned file list with git SHA-1s
+constraints.txt              pinned dependency versions for CI and make install (make lock)
 reports/                     metrics.json, REPORT.md, detection_matrix.csv, figures/,
                              attack_navigator_layer.json, first_pass/ (metrics, report, rules.diff)
 ```
