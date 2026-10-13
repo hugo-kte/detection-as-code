@@ -349,3 +349,9 @@ Code and rules: [MIT](LICENSE).
   note   = {Open Threat Research Forge, commit d9d40ef}
 }
 ```
+
+<!-- portfolio-footer -->
+
+---
+
+<sub>Part of a cybersecurity & AI engineering portfolio: [FlowGuard](https://github.com/hugo-kte/flowguard-nids) (network IDS) · **Detection-as-code (Sigma rules)** · [Insider-threat UEBA](https://github.com/hugo-kte/insider-threat-ueba) · [AlertLens](https://github.com/hugo-kte/alertlens) (SOC triage) · [PromptWall](https://github.com/hugo-kte/promptwall) (LLM firewall) · [MLSeal](https://github.com/hugo-kte/secure-mlops-pipeline) (secure MLOps) · [Gleaner](https://github.com/hugo-kte/cti-to-stix) (CTI to STIX).</sub>
