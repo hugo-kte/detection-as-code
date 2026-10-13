@@ -39,7 +39,7 @@ jobs:
         run: dac coverage -o reports/attack_navigator_layer.json
       - name: Upload converted queries
         if: matrix.python-version == '3.12'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: siem-queries
           path: reports/queries/
