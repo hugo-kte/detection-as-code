@@ -55,6 +55,20 @@ def _pct(x: float) -> str:
     return f"{x:.1%}"
 
 
+def _fraction(detection: dict[str, Any], count: str, rate: str) -> str:
+    """``70 / 97 (72.2%)``, or ``n/a`` for metrics written before the field existed."""
+    if count not in detection:
+        return "n/a"
+    return f"{detection[count]} / {detection['in_scope']} ({_pct(detection[rate])})"
+
+
+DETECTION_DEFINITIONS = (
+    "*Detected*: a rule sharing an ATT&CK technique or its parent with the recording's label fired "
+    "on it (a T1003.002 rule firing on a T1003.001 recording counts). *Strict*: the same without "
+    "credit between two different sub-techniques of one parent."
+)
+
+
 def write_report(
     result: EvaluationResult,
     metrics: dict[str, Any],
@@ -79,6 +93,8 @@ def write_report(
         "|---|---|",
         f"| In-scope recordings detected | **{det['detected']} / {det['in_scope']} "
         f"({_pct(det['detection_rate'])})** |",
+        f"| ... strict (no credit between sibling sub-techniques) | "
+        f"{_fraction(det, 'detected_strict', 'detection_rate_strict')} |",
         f"| Misses, telemetry present but no rule matched | {det['missed_no_rule_match']} |",
         f"| Misses, required telemetry absent | {det['missed_telemetry_absent']} |",
         f"| Alerts | {alerts['total']}: {alerts['expected']} on the labelled technique, "
@@ -86,6 +102,8 @@ def write_report(
         f"{alerts['false_positive']} false positives, {alerts['unreviewed']} unreviewed |",
         f"| Off-target signatures | {sigs['total']} ({sigs['attack']} attack, "
         f"{sigs['benign']} benign, {sigs['unreviewed']} unreviewed) |",
+        "",
+        DETECTION_DEFINITIONS,
         "",
     ]
     if first:
@@ -103,6 +121,8 @@ def write_report(
             f"| Recordings detected | {fd['detected']} / {fd['in_scope']} "
             f"({_pct(fd['detection_rate'])}) | {det['detected']} / {det['in_scope']} "
             f"({_pct(det['detection_rate'])}) |",
+            f"| ... strict | {_fraction(fd, 'detected_strict', 'detection_rate_strict')} | "
+            f"{_fraction(det, 'detected_strict', 'detection_rate_strict')} |",
             f"| Alerts | {fa['total']} | {alerts['total']} |",
             f"| On the labelled technique | {fa['expected']} | {alerts['expected']} |",
             f"| Off-target attack activity | {fa['off_target_attack']} | "

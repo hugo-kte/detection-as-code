@@ -9,7 +9,7 @@ import pytest
 from conftest import RULES
 from dac.coverage import build_layer
 from dac.engine import CompiledRule
-from dac.evaluate import evaluate, expected_match, explain_miss, metrics
+from dac.evaluate import evaluate, expected_match, explain_miss, metrics, strict_match
 from dac.report import write_figures, write_matrix, write_metrics, write_report
 from dac.rules import load_rules
 
@@ -24,6 +24,14 @@ def test_expected_match_counts_sub_techniques_under_their_parent():
     assert expected_match({"T1003.002"}, {"T1003", "T1003.001"})  # shared parent T1003
     assert not expected_match({"T1547.001"}, {"T1003", "T1003.001"})
     assert not expected_match({"T1547.001"}, set())
+
+
+def test_strict_match_drops_credit_between_sibling_sub_techniques():
+    assert strict_match({"T1003.001"}, {"T1003", "T1003.001"})
+    assert strict_match({"T1055"}, {"T1055", "T1055.001"})  # rule on the parent technique
+    assert strict_match({"T1021.002"}, {"T1021"})  # bare technique label
+    assert not strict_match({"T1003.002"}, {"T1003", "T1003.001"})  # sibling: expected only
+    assert not strict_match({"T1547.001"}, set())
 
 
 def test_miss_reason_checks_the_event_ids_a_service_rule_reads():
@@ -68,6 +76,8 @@ def test_metrics(result):
         "in_scope": 4,
         "detected": 2,
         "detection_rate": 0.5,
+        "detected_strict": 2,
+        "detection_rate_strict": 0.5,
         "in_scope_with_any_alert": 2,
         "missed_telemetry_absent": 1,
         "missed_no_rule_match": 1,

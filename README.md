@@ -22,12 +22,19 @@ filtered, with the before/after numbers below.
 | | First pass (rules as written) | After fixes and filters |
 |---|---:|---:|
 | Attack recordings detected by a rule of their technique | 75 / 97 (77.3%) | **70 / 97 (72.2%)** |
+| ... strict: no credit between sibling sub-techniques | 73 / 97 (75.3%) | 68 / 97 (70.1%) |
 | In-scope recordings with an alert from any rule | 89 / 97 | 76 / 97 |
 | Alerts on the 113 recordings | 499 | 309 |
 | ... on the labelled technique | 274 | 243 |
 | ... off-target but real attack activity (reviewed) | 72 | 66 |
 | ... false positives (reviewed as benign) | **153 (30.7%)** | 0 (in-sample) |
 | Off-target alert signatures reviewed | 51 (29 benign, 22 attack) | 21 (all attack) |
+
+*Detected*: a rule sharing an ATT&CK technique or its parent with the recording's label fired on
+it, so a T1003.002 rule firing on a T1003.001 recording counts. *Strict*: the same without that
+credit between two different sub-techniques of one parent; it removes the same two recordings in
+both passes (a SAM-dump recording caught only by the LSASS-access rule, a DCOM recording caught
+only by the admin-share rule).
 
 Numbers come from [`reports/metrics.json`](reports/metrics.json) and
 [`reports/first_pass/metrics.json`](reports/first_pass/metrics.json); the full breakdown (every
@@ -161,7 +168,8 @@ platform.
   alerts reviewed, but they never count as detections.
 * **Expected detections.** A recording is in scope when at least one rule shares an ATT&CK
   technique with its label, sub-techniques counting under their parent (a T1003.002 rule firing
-  on a T1003.001 recording counts). 97 of the 106 labelled recordings are in scope.
+  on a T1003.001 recording counts; the *strict* count drops that credit between siblings). 97 of
+  the 106 labelled recordings are in scope.
 * **Detected** means at least one of those rules fired on at least one event of the recording.
   A miss is explained as *telemetry absent* (none of the expected rules' event types is in the
   recording) or *no rule matched*.
@@ -255,7 +263,7 @@ covered.
 git clone https://github.com/hugo-kte/detection-as-code.git && cd detection-as-code
 make install
 make rules-lint            # pySigma validators + project checks
-make test                  # 196 tests, no dataset needed
+make test                  # 197 tests, no dataset needed
 make convert               # SPL / Lucene / ES|QL / KQL -> reports/queries/
 make download              # 214 pinned files (~61 MB) from OTRF Security-Datasets, SHA-1 verified
 make evaluate              # detection matrix, metrics, report, figures -> reports/

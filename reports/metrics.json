@@ -18,6 +18,8 @@
     "in_scope": 97,
     "detected": 70,
     "detection_rate": 0.7216,
+    "detected_strict": 68,
+    "detection_rate_strict": 0.701,
     "in_scope_with_any_alert": 76,
     "missed_telemetry_absent": 3,
     "missed_no_rule_match": 24

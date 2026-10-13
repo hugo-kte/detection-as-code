@@ -1,7 +1,8 @@
 """Run the rule set on the recordings and score it like a detection-engineering regression test.
 
 * A recording is **in scope** when at least one rule shares an ATT&CK technique (or its parent) with
-  the recording's label; it is then **expected** to be detected by those rules.
+  the recording's label; it is then **expected** to be detected by those rules. The **strict**
+  count drops the credit between two different sub-techniques of one parent.
 * Every alert a rule raises on a recording that is not labelled with the rule's technique is
   **off-target**. Off-target alerts are grouped into signatures (:mod:`dac.signatures`) and each
   signature carries an analyst verdict from ``reviews/off_target.yaml`` (:mod:`dac.review`):
@@ -96,6 +97,20 @@ class EvaluationResult:
 
 def expected_match(rule_techniques: set[str], recording_techniques: set[str]) -> bool:
     return bool(attack.with_parents(rule_techniques) & attack.with_parents(recording_techniques))
+
+
+def strict_match(rule_techniques: set[str], recording_techniques: set[str]) -> bool:
+    """Like :func:`expected_match`, without credit between two sub-techniques of one parent.
+
+    The rule must name a technique of the label, its parent, or (for a bare technique label) one of
+    its sub-techniques: a T1003.002 rule firing on a T1003.001 recording is expected, not strict.
+    """
+    leaves = _leaf_techniques(recording_techniques)
+    return any(
+        t == leaf or t == attack.parent(leaf) or attack.parent(t) == leaf
+        for t in rule_techniques
+        for leaf in leaves
+    )
 
 
 @lru_cache(maxsize=4)
@@ -263,6 +278,15 @@ def metrics(result: EvaluationResult) -> dict[str, Any]:
                 per_rule[slug]["labelled_recordings"] += 1
                 if slug in o.firing_rules:
                     per_rule[slug]["labelled_recordings_fired"] += 1
+    detected_strict = [
+        o
+        for o in detected
+        if any(
+            strict_match(own[slug], o.recording.techniques)
+            for slug in o.expected_rules
+            if slug in o.firing_rules
+        )
+    ]
     fp_recordings: dict[str, set[str]] = defaultdict(set)
     for f in result.firings:
         row = per_rule[f.rule]
@@ -308,6 +332,8 @@ def metrics(result: EvaluationResult) -> dict[str, Any]:
             "in_scope": len(in_scope),
             "detected": len(detected),
             "detection_rate": _rate(len(detected), len(in_scope)),
+            "detected_strict": len(detected_strict),
+            "detection_rate_strict": _rate(len(detected_strict), len(in_scope)),
             "in_scope_with_any_alert": sum(bool(o.firing_rules) for o in in_scope),
             "missed_telemetry_absent": sum(
                 o.miss_reason == "required telemetry absent" for o in in_scope
