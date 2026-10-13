@@ -85,7 +85,7 @@ miss, every signature with its verdict, every rule) is in [`reports/REPORT.md`](
 ```mermaid
 flowchart LR
     R["rules/*.yml<br/>41 Sigma rules"] --> L["dac lint<br/>pySigma validators<br/>+ project checks"]
-    L --> T["dac test<br/>115 synthetic cases"]
+    L --> T["dac test<br/>116 synthetic cases"]
     T --> E["dac evaluate<br/>113 recordings, 774k events"]
     E --> V{"off-target<br/>alert?"}
     V -- yes --> S["signature + analyst verdict<br/>reviews/off_target.yaml"]
@@ -307,7 +307,7 @@ verdict to any new off-target signature in `reviews/off_target.yaml`.
 
 ```text
 rules/<tactic>/*.yml         41 Sigma rules
-tests/rule_cases/*.yml       115 synthetic must-match / must-not-match events, one file per rule
+tests/rule_cases/*.yml       116 synthetic must-match / must-not-match events, one file per rule
 reviews/off_target.yaml      analyst verdict for every off-target alert signature
 reviews/tuning_log.yaml      every change made after the first evaluation, and why
 src/dac/
