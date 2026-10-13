@@ -1,0 +1,15 @@
+rule: lsass_dump_via_comsvcs
+defaults:
+  Channel: Microsoft-Windows-Sysmon/Operational
+  EventID: 1
+cases:
+- name: both tokens
+  match: true
+  event:
+    Image: C:\Windows\System32\rundll32.exe
+    CommandLine: x comsvcs x MiniDump x
+- name: library name alone
+  match: false
+  event:
+    Image: C:\Windows\System32\rundll32.exe
+    CommandLine: x comsvcs x

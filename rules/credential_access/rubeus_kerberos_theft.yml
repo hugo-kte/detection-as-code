@@ -1,0 +1,30 @@
+title: Kerberos Ticket Theft Tooling in PowerShell
+id: f4b1f472-ffe9-421e-a706-8bbc4056fa15
+status: experimental
+description: |
+    Detects PowerShell script blocks that reference Kerberos abuse functionality such as requesting
+    TGTs/TGSs or roasting service accounts. Kerberoasting and ticket requests are how attackers obtain
+    crackable service-account credentials. The rule looks at logged script-block content, so it only
+    fires when script-block logging captures the activity (compiled tools bypass it).
+references:
+    - https://attack.mitre.org/techniques/T1558/003/
+author: Hugo
+date: 2026-10-13
+tags:
+    - attack.t1558.003
+    - attack.credential-access
+logsource:
+    product: windows
+    category: ps_script
+detection:
+    selection:
+        ScriptBlockText|contains:
+            - 'kerberoast'
+            - 'asktgt'
+            - 'asktgs'
+            - 'Get-DomainSPNTicket'
+            - 'Invoke-Kerberoast'
+    condition: selection
+falsepositives:
+    - Red-team and security-tooling research in an approved context.
+level: high

@@ -1,0 +1,15 @@
+rule: remote_service_exec_scm
+defaults:
+  Channel: System
+  EventID: 7045
+cases:
+- name: service runs a command interpreter
+  match: true
+  event:
+    ServiceName: example
+    ImagePath: '%COMSPEC% /c x'
+- name: service runs a regular binary
+  match: false
+  event:
+    ServiceName: example
+    ImagePath: C:\Program Files\Example\service.exe

@@ -1,0 +1,13 @@
+rule: logon_script_userinit
+defaults:
+  Channel: Microsoft-Windows-Sysmon/Operational
+  EventID: 13
+cases:
+- name: logon script value set
+  match: true
+  event:
+    TargetObject: HKU\S-1-5-21-1-2-3-1001\Environment\UserInitMprLogonScript
+- name: other environment value
+  match: false
+  event:
+    TargetObject: HKU\S-1-5-21-1-2-3-1001\Environment\Path

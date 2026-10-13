@@ -1,0 +1,88 @@
+# Changes made to the rules after the first evaluation, and why.
+#
+# The first pass is the rule set as written before any result was seen; reports/first_pass/
+# holds its metrics, and rules.diff its exact difference with today's rules
+# (`make first-pass` rebuilds and re-evaluates it). Only two kinds of change were allowed:
+#   bug-fix        the rule did not implement its own description
+#   benign-filter  exclude activity an analyst reviewed as benign (reviews/off_target.yaml)
+# No rule was added and no logic was widened to catch a missed recording.
+# Every change is pinned by a test case in tests/rule_cases/ that fails on the first-pass rule.
+
+- rule: registry_hive_dump
+  kind: bug-fix
+  change: >-
+    Split the reg.exe selection into image / verb / hive selections. The first-pass rule repeated
+    the key `CommandLine|contains` in one selection, so YAML kept only the hive list and the
+    save/export condition was silently dropped. Hive names are now anchored: any key under
+    HKLM\SAM or HKLM\SECURITY (all credential material), but only the whole HKLM\SYSTEM hive
+    (boot key), since exporting a SYSTEM subkey is configuration collection.
+  evidence: >-
+    9 first-pass off-target alerts on reg.exe add/export/query (event-log tampering and built-in
+    network diagnostics). The strict YAML loader in `dac lint` now rejects duplicate keys.
+
+- rule: netsh_firewall_rule_added
+  kind: bug-fix
+  change: Same duplicate-key defect; the dropped condition was the `firewall` context.
+  evidence: Found by the strict YAML loader; no alert changed on this data.
+
+- rule: wmic_xsl_script_execution
+  kind: bug-fix
+  change: Same duplicate-key defect; the dropped condition was the `/format:` switch.
+  evidence: Found by the strict YAML loader; no alert changed on this data.
+
+- rule: service_binary_path_modification
+  kind: bug-fix
+  change: Same duplicate-key defect; `config` was dropped. Now `contains|all` of config + binpath.
+  evidence: Found by the strict YAML loader; no alert changed on this data.
+
+- rule: admin_share_access
+  kind: bug-fix
+  change: >-
+    `ShareName|contains: 'C$'` also matched `IPC$`, the named-pipe share every RPC client uses.
+    Now `ShareName|endswith` '\C$' or '\ADMIN$'.
+  evidence: >-
+    45 first-pass IPC$ alerts. Five of the 75 first-pass detections (remote service control over
+    the svcctl pipe) came only from IPC$ matches; they are honest misses after the fix.
+
+- rule: dcsync_replication
+  kind: benign-filter
+  change: Exclude computer accounts (SubjectUserName ending in $).
+  evidence: 3 alerts of domain controllers replicating with each other; both DCSync recordings come from user accounts and stay detected.
+
+- rule: scheduled_task_creation
+  kind: benign-filter
+  change: >-
+    Exclude built-in \Microsoft\Windows\ tasks registered or updated by the computer account, and
+    OneDrive's per-user updater task. A task registered by a user under \Microsoft\Windows\ still
+    alerts (the remote scheduled-task recording does exactly that).
+  evidence: 70 alerts in 14 signatures, all Windows maintenance (4702 updates, Update Orchestrator).
+
+- rule: lsass_memory_access
+  kind: benign-filter
+  change: >-
+    Exclude csrss.exe and wininit.exe by full System32 path, the Azure guest agent
+    (C:\WindowsAzure\...\CollectGuestLogs.exe), and WmiPrvSE.exe with exactly 0x1410.
+  evidence: 13 alerts (boot-time handles, guest-agent log collection, WMI process queries).
+
+- rule: dcom_lateral_execution
+  kind: benign-filter
+  change: Exclude interactive shells (cmd/powershell/pwsh with no arguments) under the DCOM servers.
+  evidence: >-
+    6 alerts of command prompts opened from the desktop. The ShellWindows DCOM recording is still
+    detected: its explorer.exe child runs cmd.exe with arguments.
+
+- rule: run_key_modification
+  kind: benign-filter
+  change: Exclude Windows Defender registering its tray icon and Microsoft Teams its auto-start entry (writer path AND value name).
+  evidence: 3 alerts.
+
+- rule: wscript_cscript_execution
+  kind: benign-filter
+  change: Exclude the Microsoft Monitoring Agent (MonitoringHost.exe parent) and the built-in network diagnostics script gatherNetworkInfo.vbs.
+  evidence: 10 alerts.
+
+# Rejected while tuning (caught by the regression run before being kept):
+# - narrowing the esentutl selection to '\config\sam' lost a true positive: the recorded command
+#   uses forward slashes;
+# - requiring the hive *root* for SAM/SECURITY too lost the LSA-secrets recording, which saves
+#   HKLM\SECURITY\Policy\Secrets.

@@ -1,0 +1,25 @@
+title: DLL Executed via Register-CimProvider
+id: 5e0a3c47-b16d-4faa-c235-6d4f9a2b7c55
+status: experimental
+description: |
+    Detects the signed utility Register-CimProvider.exe being pointed at a DLL with its -Path argument,
+    a proxy-execution technique that loads an attacker DLL through a trusted Microsoft binary. The rule
+    keys on the binary and the path argument, independent of the DLL.
+references:
+    - https://attack.mitre.org/techniques/T1218/
+author: Hugo
+date: 2026-10-13
+tags:
+    - attack.t1218
+    - attack.defense-evasion
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection:
+        Image|endswith: '\Register-CimProvider.exe'
+        CommandLine|contains: '-Path'
+    condition: selection
+falsepositives:
+    - Legitimate CIM provider registration is uncommon outside of software installation.
+level: high

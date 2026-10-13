@@ -1,0 +1,33 @@
+title: Active Directory Replication From Non-DC (DCSync)
+id: 2c14c4f0-7bfe-4886-a571-53382d6aa17e
+status: experimental
+description: |
+    Detects a directory-service object access that requests the replication control-access rights
+    (DS-Replication-Get-Changes and -All). Requesting these rights is how a principal asks a domain
+    controller to replicate secrets; when it originates anywhere other than a domain controller or a
+    known replication account it indicates credential theft by replication. Requires the "Directory
+    Service Access" audit subcategory on domain controllers.
+references:
+    - https://attack.mitre.org/techniques/T1003/006/
+author: Hugo
+date: 2026-10-13
+tags:
+    - attack.t1003.006
+    - attack.credential-access
+logsource:
+    product: windows
+    service: security
+detection:
+    selection:
+        EventID: 4662
+        Properties|contains:
+            - '1131f6aa-9c07-11d1-f79f-00c04fc2dcd2'
+            - '1131f6ad-9c07-11d1-f79f-00c04fc2dcd2'
+            - '9923a32a-3607-11d2-b9be-0000f87a36b2'
+    filter_computer_accounts:
+        SubjectUserName|endswith: '$'
+    condition: selection and not filter_computer_accounts
+falsepositives:
+    - Domain controllers and Azure AD Connect / directory-sync service accounts replicate legitimately;
+      allow-list those principals and alert on everything else.
+level: high

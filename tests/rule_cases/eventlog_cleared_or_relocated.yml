@@ -1,0 +1,15 @@
+rule: eventlog_cleared_or_relocated
+defaults:
+  Channel: Microsoft-Windows-Sysmon/Operational
+  EventID: 1
+cases:
+- name: log file relocated
+  match: true
+  event:
+    Image: C:\Windows\System32\wevtutil.exe
+    CommandLine: x /logfilename:x
+- name: log configuration read
+  match: false
+  event:
+    Image: C:\Windows\System32\wevtutil.exe
+    CommandLine: x get-log Security

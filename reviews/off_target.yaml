@@ -1,0 +1,272 @@
+# Analyst verdicts for off-target alert signatures.
+#
+# An alert is off-target when a rule fires on a recording that is not labelled with the rule's
+# ATT&CK technique. Alerts are grouped into signatures (see src/dac/signatures.py: image names,
+# masked registry keys, account type, the first command-line argument; never command lines or
+# script text) and each signature gets one verdict:
+#
+#   benign  normal system or user activity -> a false positive of the rule
+#   attack  attack activity the recording's label does not name (a multi-step scenario, or a
+#           recording whose upstream label is missing or names only the transport)
+#
+# `dac evaluate` reports any signature without a verdict as "unreviewed" and lists verdicts whose
+# signature no longer fires (most were removed by the tuning in reviews/tuning_log.yaml).
+
+
+# --- account_discovery_net
+- rule: account_discovery_net
+  signature: 'ParentImage=net.exe | Image=net1.exe | Verb=user'
+  verdict: attack
+  technique: T1136.001
+  rationale: 'net user with /add run through WMI to create a local account on the target: account creation rather than discovery, but attacker activity; the rule matches any ''net user''.'
+- rule: account_discovery_net
+  signature: 'ParentImage=wmiprvse.exe | Image=net.exe | Verb=user'
+  verdict: attack
+  technique: T1136.001
+  rationale: 'net user with /add run through WMI to create a local account on the target: account creation rather than discovery, but attacker activity; the rule matches any ''net user''.'
+
+# --- admin_share_access
+- rule: admin_share_access
+  signature: 'ShareName=\\*\C$ | SubjectUserName=computer-account'
+  verdict: attack
+  technique: T1505.003
+  rationale: 'The Exchange server writing into its own OWA directory through \\127.0.0.1\C$: the web-shell placement step of the ProxyLogon chain the recording is labelled with.'
+- rule: admin_share_access
+  signature: 'ShareName=\\*\C$ | SubjectUserName=user-account'
+  verdict: attack
+  technique: T1021.002
+  rationale: 'The operator copying a payload or DLL to the target over C$ before executing it with WMI, a service or a DLL hijack; the recordings are labelled with the execution step.'
+- rule: admin_share_access
+  signature: 'ShareName=\\*\IPC$ | SubjectUserName=computer-account'
+  verdict: benign
+  rationale: 'Computer-account RPC over the IPC$ named-pipe share (Netlogon, Group Policy, LSA). Matched only because ''C$'' is a substring of ''IPC$''; fixed by anchoring the share name.'
+- rule: admin_share_access
+  signature: 'ShareName=\\*\IPC$ | SubjectUserName=user-account'
+  verdict: benign
+  rationale: 'IPC$ is the named-pipe share every RPC client uses; an IPC$ access is no evidence of admin-share abuse even when the RPC behind it was the operator''s. Matched only via the ''C$'' substring bug; fixed.'
+
+# --- create_remote_thread_injection
+- rule: create_remote_thread_injection
+  signature: 'SourceImage=iexplore.exe | TargetImage=&lt;unknown process&gt;'
+  verdict: attack
+  technique: T1055
+  rationale: 'Remote thread created from the DCOM-launched Internet Explorer after the iertutil.dll hijack loaded the implant (the recording is labelled with the DCOM step).'
+- rule: create_remote_thread_injection
+  signature: 'SourceImage=wmiprvse.exe | TargetImage=notepad.exe'
+  verdict: attack
+  technique: T1055
+  rationale: 'WMI provider host, compromised through the wbemcomn.dll hijack, injecting a thread into a spawned notepad (the recording is labelled with the WMI step).'
+- rule: create_remote_thread_injection
+  signature: 'SourceImage=wuauclt.exe | TargetImage=&lt;unknown process&gt;'
+  verdict: attack
+  technique: T1055
+  rationale: 'wuauclt.exe proxy-loads a DLL that then creates a remote thread; the recording is labelled only with the proxy-execution technique (T1218).'
+
+# --- dcom_lateral_execution
+- rule: dcom_lateral_execution
+  signature: 'ParentImage=explorer.exe | Image=cmd.exe | Verb=-'
+  verdict: benign
+  rationale: 'Interactive command prompt opened from the desktop (no arguments): ordinary user behaviour that an explorer.exe parent cannot tell from DCOM execution. Filtered.'
+- rule: dcom_lateral_execution
+  signature: 'ParentImage=explorer.exe | Image=powershell.exe | Verb=-'
+  verdict: benign
+  rationale: 'Interactive PowerShell window opened from the desktop (no arguments). Filtered as an interactive shell.'
+- rule: dcom_lateral_execution
+  signature: 'ParentImage=explorer.exe | Image=powershell.exe | Verb=-c'
+  verdict: attack
+  technique: T1547.001
+  rationale: 'Run-key persistence firing at logon: explorer.exe starts the registered PowerShell launcher. The recording''s own technique, seen at execution time.'
+
+# --- dcsync_replication
+- rule: dcsync_replication
+  signature: 'SubjectUserName=computer-account | ObjectServer=DS'
+  verdict: benign
+  rationale: 'Domain controllers replicating with each other under their computer accounts. DCSync requests come from user principals; both DCSync recordings stay detected after the filter.'
+
+# --- lsass_memory_access
+- rule: lsass_memory_access
+  signature: 'SourceImage=collectguestlogs.exe | GrantedAccess=0x1410'
+  verdict: benign
+  rationale: 'Azure VM guest agent log collector (C:\WindowsAzure\...\CollectGuestLogs.exe) reading process information. Filtered by path.'
+- rule: lsass_memory_access
+  signature: 'SourceImage=csrss.exe | GrantedAccess=0x1fffff'
+  verdict: benign
+  rationale: 'The session manager holds a full-access handle to LSASS at boot (recordings that include a reboot). Filtered by full system path.'
+- rule: lsass_memory_access
+  signature: 'SourceImage=powershell.exe | GrantedAccess=0x1010'
+  verdict: attack
+  technique: T1550.002
+  rationale: 'In-memory tooling opening LSASS with write rights to patch it for over-pass-the-hash, the technique the recording is labelled with (T1550.002).'
+- rule: lsass_memory_access
+  signature: 'SourceImage=powershell.exe | GrantedAccess=0x1038'
+  verdict: attack
+  technique: T1550.002
+  rationale: 'In-memory tooling opening LSASS with write rights to patch it for over-pass-the-hash, the technique the recording is labelled with (T1550.002).'
+- rule: lsass_memory_access
+  signature: 'SourceImage=wininit.exe | GrantedAccess=0x1fffff'
+  verdict: benign
+  rationale: 'wininit.exe is LSASS''s parent process; full access at boot is normal. Filtered by full system path.'
+- rule: lsass_memory_access
+  signature: 'SourceImage=wmiprvse.exe | GrantedAccess=0x1410'
+  verdict: benign
+  rationale: 'WmiPrvSE opens every process with query+read rights to answer Win32_Process queries (here a remote wmic process listing). Every inventory or monitoring query does the same.'
+- rule: lsass_memory_access
+  signature: 'SourceImage=wsmprovhost.exe | GrantedAccess=0x1410'
+  verdict: attack
+  technique: T1057
+  rationale: 'Process enumeration from .NET code inside the operator''s PowerShell Remoting session (CallTrace shows JIT frames in wsmprovhost); LSASS is opened as one of all processes.'
+- rule: lsass_memory_access
+  signature: 'SourceImage=wsmprovhost.exe | GrantedAccess=0x1f3fff'
+  verdict: attack
+  technique: T1057
+  rationale: 'Process enumeration from .NET code inside the operator''s PowerShell Remoting session (CallTrace shows JIT frames in wsmprovhost); LSASS is opened as one of all processes.'
+
+# --- netsh_firewall_rule_added
+- rule: netsh_firewall_rule_added
+  signature: 'ParentImage=powershell.exe | Image=netsh.exe | Verb=advfirewall'
+  verdict: attack
+  technique: T1562.004
+  rationale: 'The operator opening an inbound firewall port for the Python web server the recording is about (labelled T1059).'
+
+# --- ntds_database_extraction
+- rule: ntds_database_extraction
+  signature: 'ParentImage=cmd.exe | Image=vssadmin.exe | Verb=create'
+  verdict: attack
+  technique: T1003.003
+  rationale: 'Shadow copy created to read NTDS.dit: the recording''s own behaviour. It is unlabelled because its upstream metadata links a file name absent at the pinned commit.'
+
+# --- powershell_download_cradle
+- rule: powershell_download_cradle
+  signature: 'Path=-'
+  verdict: attack
+  technique: T1059.001
+  rationale: 'The Empire stager: every Empire scenario starts with an in-memory PowerShell download cradle, whatever technique the scenario is labelled with.'
+
+# --- registry_hive_dump
+- rule: registry_hive_dump
+  signature: 'ParentImage=cmd.exe | Image=reg.exe | Verb=add'
+  verdict: attack
+  technique: T1562.002
+  rationale: 'reg add under HKLM\SYSTEM to disable event logging. Matched only because a duplicate YAML key silently dropped the save/export condition; fixed.'
+- rule: registry_hive_dump
+  signature: 'ParentImage=cmd.exe | Image=reg.exe | Verb=export'
+  verdict: benign
+  rationale: 'Built-in Windows network diagnostics exporting configuration subkeys of HKLM\SYSTEM. A subkey export is not a hive dump; fixed by requiring the SYSTEM hive root.'
+- rule: registry_hive_dump
+  signature: 'ParentImage=cmd.exe | Image=reg.exe | Verb=query'
+  verdict: benign
+  rationale: 'Built-in Windows network diagnostics querying a service key. Matched only because the duplicate YAML key dropped the save/export condition; fixed.'
+- rule: registry_hive_dump
+  signature: 'ParentImage=cmd.exe | Image=reg.exe | Verb=save'
+  verdict: attack
+  technique: T1003.002
+  rationale: 'SYSTEM hive saved to obtain the boot key that decrypts NTDS.dit: part of the recording''s NTDS extraction (unlabelled upstream).'
+
+# --- run_key_modification
+- rule: run_key_modification
+  signature: 'TargetObject=HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Run\WindowsDefender'
+  verdict: benign
+  rationale: 'Windows Defender (MsMpEng.exe) registering its own tray application. Filtered by writer path and value name.'
+- rule: run_key_modification
+  signature: 'TargetObject=HKU\<SID>\Software\Microsoft\Windows\CurrentVersion\Run\com.squirrel.Teams.Teams'
+  verdict: benign
+  rationale: 'Microsoft Teams registering its auto-start entry. Filtered by writer path and value name.'
+
+# --- scheduled_task_creation
+- rule: scheduled_task_creation
+  signature: 'EventID=4698 | TaskName=\Microsoft\Windows\UpdateOrchestrator\AC Power Download | SubjectUserName=computer-account'
+  verdict: benign
+  rationale: 'Windows registering or updating one of its built-in tasks under the computer account. Filtered (built-in path AND computer account).'
+- rule: scheduled_task_creation
+  signature: 'EventID=4698 | TaskName=\Microsoft\Windows\UpdateOrchestrator\AC Power Install | SubjectUserName=computer-account'
+  verdict: benign
+  rationale: 'Windows registering or updating one of its built-in tasks under the computer account. Filtered (built-in path AND computer account).'
+- rule: scheduled_task_creation
+  signature: 'EventID=4698 | TaskName=\OneDrive Standalone Update Task-S-1-5-21-1966984447-233561266-573182232-500 | SubjectUserName=user-account'
+  verdict: benign
+  rationale: 'OneDrive''s per-user updater registering its task. Filtered by task name.'
+- rule: scheduled_task_creation
+  signature: 'EventID=4698 | TaskName=\OneDrive Standalone Update Task-S-1-5-21-4228717743-1032521047-1810997296-1106 | SubjectUserName=user-account'
+  verdict: benign
+  rationale: 'OneDrive''s per-user updater registering its task. Filtered by task name.'
+- rule: scheduled_task_creation
+  signature: 'EventID=4702 | TaskName=\Microsoft\Windows\Application Experience\Microsoft Compatibility Appraiser | SubjectUserName=computer-account'
+  verdict: benign
+  rationale: 'Windows registering or updating one of its built-in tasks under the computer account. Filtered (built-in path AND computer account).'
+- rule: scheduled_task_creation
+  signature: 'EventID=4702 | TaskName=\Microsoft\Windows\Device Information\Device | SubjectUserName=computer-account'
+  verdict: benign
+  rationale: 'Windows registering or updating one of its built-in tasks under the computer account. Filtered (built-in path AND computer account).'
+- rule: scheduled_task_creation
+  signature: 'EventID=4702 | TaskName=\Microsoft\Windows\Flighting\OneSettings\RefreshCache | SubjectUserName=computer-account'
+  verdict: benign
+  rationale: 'Windows registering or updating one of its built-in tasks under the computer account. Filtered (built-in path AND computer account).'
+- rule: scheduled_task_creation
+  signature: 'EventID=4702 | TaskName=\Microsoft\Windows\GroupPolicy\<GUID> | SubjectUserName=computer-account'
+  verdict: benign
+  rationale: 'Windows registering or updating one of its built-in tasks under the computer account. Filtered (built-in path AND computer account).'
+- rule: scheduled_task_creation
+  signature: 'EventID=4702 | TaskName=\Microsoft\Windows\SoftwareProtectionPlatform\SvcRestartTask | SubjectUserName=computer-account'
+  verdict: benign
+  rationale: 'Windows registering or updating one of its built-in tasks under the computer account. Filtered (built-in path AND computer account).'
+- rule: scheduled_task_creation
+  signature: 'EventID=4702 | TaskName=\Microsoft\Windows\UpdateOrchestrator\Schedule Maintenance Work | SubjectUserName=computer-account'
+  verdict: benign
+  rationale: 'Windows registering or updating one of its built-in tasks under the computer account. Filtered (built-in path AND computer account).'
+- rule: scheduled_task_creation
+  signature: 'EventID=4702 | TaskName=\Microsoft\Windows\UpdateOrchestrator\Schedule Scan | SubjectUserName=computer-account'
+  verdict: benign
+  rationale: 'Windows registering or updating one of its built-in tasks under the computer account. Filtered (built-in path AND computer account).'
+- rule: scheduled_task_creation
+  signature: 'EventID=4702 | TaskName=\Microsoft\Windows\UpdateOrchestrator\Schedule Wake To Work | SubjectUserName=computer-account'
+  verdict: benign
+  rationale: 'Windows registering or updating one of its built-in tasks under the computer account. Filtered (built-in path AND computer account).'
+- rule: scheduled_task_creation
+  signature: 'EventID=4702 | TaskName=\Microsoft\Windows\UpdateOrchestrator\Schedule Work | SubjectUserName=computer-account'
+  verdict: benign
+  rationale: 'Windows registering or updating one of its built-in tasks under the computer account. Filtered (built-in path AND computer account).'
+- rule: scheduled_task_creation
+  signature: 'EventID=4702 | TaskName=\Microsoft\Windows\UpdateOrchestrator\Universal Orchestrator Start | SubjectUserName=computer-account'
+  verdict: benign
+  rationale: 'Windows registering or updating one of its built-in tasks under the computer account. Filtered (built-in path AND computer account).'
+
+# --- winrm_remote_execution
+- rule: winrm_remote_execution
+  signature: 'ParentImage=wsmprovhost.exe | Image=powershell.exe | Verb=-sta'
+  verdict: attack
+  technique: T1021.006
+  rationale: 'Covenant implant started over PowerShell Remoting; the recording carries no upstream label.'
+
+# --- wmi_event_subscription
+- rule: wmi_event_subscription
+  signature: 'EventID=19 | Operation=Created'
+  verdict: attack
+  technique: T1546.003
+  rationale: 'WMI event filter and binding created remotely: the recording''s actual behaviour is an event subscription, labelled upstream only with its WMI transport (T1047).'
+- rule: wmi_event_subscription
+  signature: 'EventID=21 | Operation=Created'
+  verdict: attack
+  technique: T1546.003
+  rationale: 'WMI event filter and binding created remotely: the recording''s actual behaviour is an event subscription, labelled upstream only with its WMI transport (T1047).'
+
+# --- wmi_remote_process_creation
+- rule: wmi_remote_process_creation
+  signature: 'ParentImage=wmiprvse.exe | Image=powershell.exe | Verb=-noni'
+  verdict: attack
+  technique: T1546.003
+  rationale: 'The WMI event consumer firing and starting the persisted PowerShell payload: the recording''s labelled technique, seen at execution time.'
+- rule: wmi_remote_process_creation
+  signature: 'ParentImage=wmiprvse.exe | Image=whoami.exe | Verb=-'
+  verdict: attack
+  technique: T1047
+  rationale: 'Command executed remotely through WMI/WSMan automation; the recording carries no upstream label.'
+
+# --- wscript_cscript_execution
+- rule: wscript_cscript_execution
+  signature: 'ParentImage=monitoringhost.exe | Image=cscript.exe | Verb=/nologo'
+  verdict: benign
+  rationale: 'Microsoft Monitoring Agent running its management-pack VBScripts. Filtered by parent path.'
+- rule: wscript_cscript_execution
+  signature: 'ParentImage=netsh.exe | Image=cscript.exe | Verb=<path>'
+  verdict: benign
+  rationale: 'Built-in Windows network diagnostics script (gatherNetworkInfo.vbs) launched by netsh. Filtered by script path.'

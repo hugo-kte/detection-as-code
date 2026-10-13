@@ -1,0 +1,27 @@
+title: CMSTP Silent INF Proxy Execution
+id: 8a405607-c87e-4ce0-92f8-e656f6ba0eca
+status: experimental
+description: |
+    Detects the Connection Manager Profile Installer (cmstp.exe) being driven silently from an INF
+    file, which can run arbitrary commands and bypass User Account Control through a trusted binary.
+    The rule keys on cmstp with the silent flag and an INF argument.
+references:
+    - https://attack.mitre.org/techniques/T1218/003/
+author: Hugo
+date: 2026-10-13
+tags:
+    - attack.t1218.003
+    - attack.defense-evasion
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection:
+        Image|endswith: '\cmstp.exe'
+        CommandLine|contains:
+            - '/s'
+            - '.inf'
+    condition: selection
+falsepositives:
+    - Deployment of legitimate VPN/connection profiles via CMSTP; baseline the INF sources.
+level: medium

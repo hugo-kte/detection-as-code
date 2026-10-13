@@ -1,0 +1,223 @@
+diff -ruN a/credential_access/dcsync_replication.yml b/credential_access/dcsync_replication.yml
+--- a/credential_access/dcsync_replication.yml	2026-10-13 13:03:09
++++ b/credential_access/dcsync_replication.yml	2026-10-13 13:03:10
+@@ -24,7 +24,9 @@
+             - '1131f6aa-9c07-11d1-f79f-00c04fc2dcd2'
+             - '1131f6ad-9c07-11d1-f79f-00c04fc2dcd2'
+             - '9923a32a-3607-11d2-b9be-0000f87a36b2'
+-    condition: selection
++    filter_computer_accounts:
++        SubjectUserName|endswith: '$'
++    condition: selection and not filter_computer_accounts
+ falsepositives:
+     - Domain controllers and Azure AD Connect / directory-sync service accounts replicate legitimately;
+       allow-list those principals and alert on everything else.
+diff -ruN a/credential_access/lsass_memory_access.yml b/credential_access/lsass_memory_access.yml
+--- a/credential_access/lsass_memory_access.yml	2026-10-13 13:03:09
++++ b/credential_access/lsass_memory_access.yml	2026-10-13 13:03:10
+@@ -29,7 +29,17 @@
+             - '0x1f2fff'
+             - '0x1f3fff'
+             - '0x1fffff'
+-    condition: selection
++    filter_system:
++        SourceImage:
++            - 'C:\Windows\System32\csrss.exe'
++            - 'C:\Windows\System32\wininit.exe'
++    filter_azure_guest_agent:
++        SourceImage|startswith: 'C:\WindowsAzure\'
++        SourceImage|endswith: '\CollectGuestLogs.exe'
++    filter_wmi_process_query:
++        SourceImage: 'C:\Windows\System32\wbem\WmiPrvSE.exe'
++        GrantedAccess: '0x1410'
++    condition: selection and not 1 of filter_*
+ falsepositives:
+     - Endpoint protection, memory scanners and crash-dump tooling may legitimately read LSASS; tune
+       by allow-listing the specific signed SourceImage paths observed in the environment.
+diff -ruN a/credential_access/registry_hive_dump.yml b/credential_access/registry_hive_dump.yml
+--- a/credential_access/registry_hive_dump.yml	2026-10-13 13:03:09
++++ b/credential_access/registry_hive_dump.yml	2026-10-13 13:03:10
+@@ -19,21 +19,26 @@
+     category: process_creation
+     product: windows
+ detection:
+-    reg_save:
++    reg_image:
+         Image|endswith: '\reg.exe'
++    reg_verb:
+         CommandLine|contains:
+-            - 'save'
+-            - 'export'
++            - ' save '
++            - ' export '
++    reg_secret_hives:  # every key under SAM and SECURITY is credential material
+         CommandLine|contains:
+-            - '\sam'
+-            - '\security'
+-            - '\system'
++            - 'hklm\sam'
++            - 'hklm\security'
++            - 'hkey_local_machine\sam'
++            - 'hkey_local_machine\security'
++    reg_system_hive:  # SYSTEM is mostly configuration: only the whole hive (boot key) counts
++        CommandLine|re|i: '(hklm|hkey_local_machine)\\system("|\s|$)'
+     esentutl_copy:
+         Image|endswith: '\esentutl.exe'
+         CommandLine|contains|all:
+             - '/y'
+             - 'sam'
+-    condition: reg_save or esentutl_copy
++    condition: (reg_image and reg_verb and (reg_secret_hives or reg_system_hive)) or esentutl_copy
+ falsepositives:
+     - Backup or migration tooling that exports registry hives; correlate with the account and host.
+ level: high
+diff -ruN a/defense_evasion/netsh_firewall_rule_added.yml b/defense_evasion/netsh_firewall_rule_added.yml
+--- a/defense_evasion/netsh_firewall_rule_added.yml	2026-10-13 13:03:09
++++ b/defense_evasion/netsh_firewall_rule_added.yml	2026-10-13 13:03:10
+@@ -19,11 +19,12 @@
+     selection:
+         Image|endswith: '\netsh.exe'
+         CommandLine|contains: 'firewall'
++    add_rule:
+         CommandLine|contains:
+             - 'add rule'
+             - 'add portopening'
+             - 'allowedprogram'
+-    condition: selection
++    condition: selection and add_rule
+ falsepositives:
+     - Administrators and installers add firewall rules; correlate with the account and the program
+       being allowed.
+diff -ruN a/defense_evasion/wmic_xsl_script_execution.yml b/defense_evasion/wmic_xsl_script_execution.yml
+--- a/defense_evasion/wmic_xsl_script_execution.yml	2026-10-13 13:03:09
++++ b/defense_evasion/wmic_xsl_script_execution.yml	2026-10-13 13:03:10
+@@ -21,12 +21,12 @@
+         CommandLine|contains:
+             - '/format:'
+             - '-format:'
+-            - 'format:'
++    stylesheet:
+         CommandLine|contains:
+             - '.xsl'
+             - 'http://'
+             - 'https://'
+-    condition: selection
++    condition: selection and stylesheet
+ falsepositives:
+     - Custom administrative XSL formatters are uncommon but possible; baseline them.
+ level: medium
+diff -ruN a/execution/wscript_cscript_execution.yml b/execution/wscript_cscript_execution.yml
+--- a/execution/wscript_cscript_execution.yml	2026-10-13 13:03:09
++++ b/execution/wscript_cscript_execution.yml	2026-10-13 13:03:10
+@@ -25,7 +25,11 @@
+             - '.js'
+             - '.jse'
+             - '.wsf'
+-    condition: selection
++    filter_monitoring_agent:
++        ParentImage|endswith: '\Microsoft Monitoring Agent\Agent\MonitoringHost.exe'
++    filter_network_diagnostics:
++        CommandLine|endswith: '\system32\gatherNetworkInfo.vbs'
++    condition: selection and not 1 of filter_*
+ falsepositives:
+     - Enterprise logon and management scripts use the script host; baseline expected scripts per host.
+ level: medium
+diff -ruN a/lateral_movement/admin_share_access.yml b/lateral_movement/admin_share_access.yml
+--- a/lateral_movement/admin_share_access.yml	2026-10-13 13:03:09
++++ b/lateral_movement/admin_share_access.yml	2026-10-13 13:03:10
+@@ -2,8 +2,8 @@
+ id: 0eb44c5e-6724-4b52-857b-f373dcd0c49b
+ status: experimental
+ description: |
+-    Detects a network client accessing a hidden administrative share (C$, ADMIN$, IPC$ with a file
+-    path). Attackers use admin shares to stage tools and read or write files on remote hosts during
++    Detects a network client accessing a hidden administrative share (C$ or ADMIN$). IPC$, the named-pipe
++    share used by every RPC client, is deliberately not matched. Attackers use admin shares to stage tools and read or write files on remote hosts during
+     lateral movement. Requires the "Detailed File Share" audit subcategory.
+ references:
+     - https://attack.mitre.org/techniques/T1021/002/
+@@ -18,9 +18,9 @@
+ detection:
+     selection:
+         EventID: 5145
+-        ShareName|contains:
+-            - 'C$'
+-            - 'ADMIN$'
++        ShareName|endswith:
++            - '\C$'
++            - '\ADMIN$'
+     condition: selection
+ falsepositives:
+     - Administrative tooling, backup and software deployment use admin shares heavily; baseline by
+diff -ruN a/lateral_movement/dcom_lateral_execution.yml b/lateral_movement/dcom_lateral_execution.yml
+--- a/lateral_movement/dcom_lateral_execution.yml	2026-10-13 13:03:09
++++ b/lateral_movement/dcom_lateral_execution.yml	2026-10-13 13:03:10
+@@ -31,7 +31,9 @@
+             - '\rundll32.exe'
+             - '\regsvr32.exe'
+             - '\mshta.exe'
+-    condition: selection
++    filter_interactive_shell:
++        CommandLine|re|i: '^"?([a-z]:\\[^"]*\\)?(cmd|powershell|pwsh)(\.exe)?"?\s*$'
++    condition: selection and not filter_interactive_shell
+ falsepositives:
+     - Office applications spawn shells when users run macros; correlate with document activity and the
+       command line.
+diff -ruN a/persistence/run_key_modification.yml b/persistence/run_key_modification.yml
+--- a/persistence/run_key_modification.yml	2026-10-13 13:03:10
++++ b/persistence/run_key_modification.yml	2026-10-13 13:03:10
+@@ -22,7 +22,18 @@
+             - '\CurrentVersion\RunOnce\'
+             - '\CurrentVersion\RunServices\'
+             - '\CurrentVersion\Policies\Explorer\Run\'
+-    condition: selection
++    filter_defender_tray:
++        Image|startswith:
++            - 'C:\Program Files\Windows Defender\'
++            - 'C:\ProgramData\Microsoft\Windows Defender\Platform\'
++        Image|endswith: '\MsMpEng.exe'
++        TargetObject|endswith: '\Run\WindowsDefender'
++    filter_teams_autostart:
++        Image|endswith:
++            - '\AppData\Local\Microsoft\Teams\current\Teams.exe'
++            - '\AppData\Local\Microsoft\Teams\Update.exe'
++        TargetObject|endswith: '\Run\com.squirrel.Teams.Teams'
++    condition: selection and not 1 of filter_*
+ falsepositives:
+     - Installers and management agents add Run keys; baseline the expected programs per host role.
+ level: medium
+diff -ruN a/persistence/scheduled_task_creation.yml b/persistence/scheduled_task_creation.yml
+--- a/persistence/scheduled_task_creation.yml	2026-10-13 13:03:10
++++ b/persistence/scheduled_task_creation.yml	2026-10-13 13:03:10
+@@ -21,8 +21,15 @@
+         EventID:
+             - 4698
+             - 4702
+-    condition: audit_event
++    filter_builtin_maintenance:
++        SubjectUserName|endswith: '$'
++        TaskName|startswith: '\Microsoft\Windows\'
++    filter_onedrive_updater:
++        TaskName|startswith: '\OneDrive Standalone Update Task'
++    condition: audit_event and not 1 of filter_*
+ falsepositives:
+     - Software installation and management tooling create scheduled tasks routinely; baseline by task
+       name and the account that created them.
++    - Blind spot of the built-in filter - a task registered as SYSTEM under \Microsoft\Windows\ is
++      not reported; the schtasks command-line rule still sees it if schtasks.exe is used.
+ level: medium
+diff -ruN a/privilege_escalation/service_binary_path_modification.yml b/privilege_escalation/service_binary_path_modification.yml
+--- a/privilege_escalation/service_binary_path_modification.yml	2026-10-13 13:03:10
++++ b/privilege_escalation/service_binary_path_modification.yml	2026-10-13 13:03:10
+@@ -19,8 +19,9 @@
+ detection:
+     selection:
+         Image|endswith: '\sc.exe'
+-        CommandLine|contains: 'config'
+-        CommandLine|contains: 'binpath'
++        CommandLine|contains|all:
++            - 'config'
++            - 'binpath'
+     condition: selection
+ falsepositives:
+     - Administrators reconfigure services; correlate with the service and the new path.

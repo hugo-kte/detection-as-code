@@ -1,0 +1,13 @@
+rule: eventlog_service_disabled_powershell
+defaults:
+  Channel: Microsoft-Windows-PowerShell/Operational
+  EventID: 4104
+cases:
+- name: stop the logging service
+  match: true
+  event:
+    ScriptBlockText: Stop-Service -Name EventLog
+- name: stop an unrelated service
+  match: false
+  event:
+    ScriptBlockText: Stop-Service -Name Example

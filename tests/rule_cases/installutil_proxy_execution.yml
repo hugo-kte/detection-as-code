@@ -1,0 +1,15 @@
+rule: installutil_proxy_execution
+defaults:
+  Channel: Microsoft-Windows-Sysmon/Operational
+  EventID: 1
+cases:
+- name: flag combination
+  match: true
+  event:
+    Image: C:\Windows\Microsoft.NET\installutil.exe
+    CommandLine: x /logfile= x /u x
+- name: logfile flag alone
+  match: false
+  event:
+    Image: C:\Windows\Microsoft.NET\installutil.exe
+    CommandLine: x /logfile=x x

@@ -1,0 +1,28 @@
+title: UAC Bypass via ms-settings Shell Open Command
+id: 9f95c21c-41d9-41e0-ab89-c83bafeacda7
+status: experimental
+description: |
+    Detects writes to the ms-settings (or mscfile) shell open command key under the user's hive, the
+    hijack point that fodhelper.exe and similar auto-elevating binaries read. Populating this key lets
+    an attacker run a chosen program at high integrity without a UAC prompt.
+references:
+    - https://attack.mitre.org/techniques/T1548/002/
+author: Hugo
+date: 2026-10-13
+tags:
+    - attack.t1548.002
+    - attack.privilege-escalation
+    - attack.defense-evasion
+logsource:
+    category: registry_event
+    product: windows
+detection:
+    selection:
+        TargetObject|contains:
+            - '\ms-settings\Shell\Open\command'
+            - '\ms-settings\shell\open\command'
+            - '\mscfile\shell\open\command'
+    condition: selection
+falsepositives:
+    - Essentially none; these keys are not normally written by user-mode software.
+level: high

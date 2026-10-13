@@ -1,0 +1,15 @@
+rule: bitsadmin_transfer_job
+defaults:
+  Channel: Microsoft-Windows-Sysmon/Operational
+  EventID: 1
+cases:
+- name: transfer verb
+  match: true
+  event:
+    Image: C:\Windows\System32\bitsadmin.exe
+    CommandLine: x /transfer x
+- name: listing jobs
+  match: false
+  event:
+    Image: C:\Windows\System32\bitsadmin.exe
+    CommandLine: x /list

@@ -1,0 +1,13 @@
+rule: rubeus_kerberos_theft
+defaults:
+  Channel: Microsoft-Windows-PowerShell/Operational
+  EventID: 4104
+cases:
+- name: roasting keyword
+  match: true
+  event:
+    ScriptBlockText: x kerberoast x
+- name: ordinary script
+  match: false
+  event:
+    ScriptBlockText: Get-Date

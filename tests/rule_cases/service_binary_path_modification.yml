@@ -1,0 +1,15 @@
+rule: service_binary_path_modification
+defaults:
+  Channel: Microsoft-Windows-Sysmon/Operational
+  EventID: 1
+cases:
+- name: binary path reconfigured
+  match: true
+  event:
+    Image: C:\Windows\System32\sc.exe
+    CommandLine: x config x binpath= x
+- name: 'regression: binpath without config (duplicate-key bug)'
+  match: false
+  event:
+    Image: C:\Windows\System32\sc.exe
+    CommandLine: x create x binpath= x

@@ -1,0 +1,21 @@
+rule: admin_share_access
+defaults:
+  Channel: Security
+  EventID: 5145
+cases:
+- name: C$ accessed
+  match: true
+  event:
+    ShareName: \\*\C$
+- name: ADMIN$ accessed
+  match: true
+  event:
+    ShareName: \\*\ADMIN$
+- name: 'regression: IPC$ ends with C$ (substring bug)'
+  match: false
+  event:
+    ShareName: \\*\IPC$
+- name: SYSVOL is not an admin share
+  match: false
+  event:
+    ShareName: \\*\SYSVOL

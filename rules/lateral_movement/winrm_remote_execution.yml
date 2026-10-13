@@ -1,0 +1,26 @@
+title: Process Launched by WinRM Host Process
+id: 05745a7a-cc2a-444a-ac75-8702544866b8
+status: experimental
+description: |
+    Detects a process launched as a child of wsmprovhost.exe, the host for PowerShell Remoting / WinRM
+    sessions. Remotely executed commands over WinRM run under this host, so an unexpected child
+    indicates remote command execution.
+references:
+    - https://attack.mitre.org/techniques/T1021/006/
+author: Hugo
+date: 2026-10-13
+tags:
+    - attack.t1021.006
+    - attack.lateral-movement
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection:
+        ParentImage|endswith: '\wsmprovhost.exe'
+    filter_conhost:
+        Image|endswith: '\conhost.exe'
+    condition: selection and not filter_conhost
+falsepositives:
+    - Legitimate remote administration over WinRM; baseline the admin accounts and source hosts.
+level: medium

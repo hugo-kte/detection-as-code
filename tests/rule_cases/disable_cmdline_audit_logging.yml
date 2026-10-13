@@ -1,0 +1,15 @@
+rule: disable_cmdline_audit_logging
+defaults:
+  Channel: Microsoft-Windows-Sysmon/Operational
+  EventID: 13
+cases:
+- name: policy cleared
+  match: true
+  event:
+    TargetObject: HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System\Audit\ProcessCreationIncludeCmdLine_Enabled
+    Details: DWORD (0x00000000)
+- name: policy enabled
+  match: false
+  event:
+    TargetObject: HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System\Audit\ProcessCreationIncludeCmdLine_Enabled
+    Details: DWORD (0x00000001)

@@ -1,0 +1,20 @@
+rule: run_key_modification
+defaults:
+  Channel: Microsoft-Windows-Sysmon/Operational
+  EventID: 13
+cases:
+- name: value under Run
+  match: true
+  event:
+    Image: C:\Temp\example.exe
+    TargetObject: HKU\S-1-5-21-1-2-3-1001\Software\Microsoft\Windows\CurrentVersion\Run\Example
+- name: Defender registering its tray icon is filtered
+  match: false
+  event:
+    Image: C:\Program Files\Windows Defender\MsMpEng.exe
+    TargetObject: HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Run\WindowsDefender
+- name: unrelated key
+  match: false
+  event:
+    Image: C:\Temp\example.exe
+    TargetObject: HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Example

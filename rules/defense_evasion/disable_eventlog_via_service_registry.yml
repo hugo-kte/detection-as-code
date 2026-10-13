@@ -1,0 +1,25 @@
+title: Event Log Service Disabled via Start-Type Registry
+id: 89440b4e-a032-4e43-811a-2c1c26f9a457
+status: experimental
+description: |
+    Detects the Start value of the Windows Event Log service (or a dependency) being set to 4
+    (disabled) in the registry, which stops logging after the next reboot. Blinding the event log is a
+    defense-evasion step that precedes or hides further activity.
+references:
+    - https://attack.mitre.org/techniques/T1562/002/
+author: Hugo
+date: 2026-10-13
+tags:
+    - attack.t1562.002
+    - attack.defense-evasion
+logsource:
+    category: registry_set
+    product: windows
+detection:
+    selection:
+        TargetObject|endswith: '\Services\EventLog\Start'
+        Details: 'DWORD (0x00000004)'
+    condition: selection
+falsepositives:
+    - Deliberate service hardening changes performed by administrators.
+level: high

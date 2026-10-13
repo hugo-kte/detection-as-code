@@ -1,0 +1,28 @@
+title: Existing Service Binary Path Modified via sc
+id: 3a7c0395-62f6-4a32-8497-e5f5e17d597a
+status: experimental
+description: |
+    Detects the sc utility being used to change the binary path of a service. Repointing a service,
+    especially one that runs as SYSTEM, is a route to both privilege escalation and persistence. The
+    rule keys on sc config with a binPath argument.
+references:
+    - https://attack.mitre.org/techniques/T1543/003/
+author: Hugo
+date: 2026-10-13
+tags:
+    - attack.t1543.003
+    - attack.privilege-escalation
+    - attack.persistence
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection:
+        Image|endswith: '\sc.exe'
+        CommandLine|contains|all:
+            - 'config'
+            - 'binpath'
+    condition: selection
+falsepositives:
+    - Administrators reconfigure services; correlate with the service and the new path.
+level: high

@@ -1,0 +1,36 @@
+title: PowerShell Download Cradle in Script Block
+id: 25ea2b7a-25f9-423b-90c4-bcf0ffc1d268
+status: experimental
+description: |
+    Detects script-block content that downloads and runs code in memory (web-client download methods
+    combined with expression invocation or base64 decoding). This "download cradle" is the most common
+    way PowerShell payloads are staged. Requires script-block logging.
+references:
+    - https://attack.mitre.org/techniques/T1059/001/
+author: Hugo
+date: 2026-10-13
+tags:
+    - attack.t1059.001
+    - attack.execution
+logsource:
+    product: windows
+    category: ps_script
+detection:
+    download:
+        ScriptBlockText|contains:
+            - 'Net.WebClient'
+            - 'DownloadString'
+            - 'DownloadFile'
+            - 'DownloadData'
+            - 'Invoke-WebRequest'
+            - 'Start-BitsTransfer'
+    execute:
+        ScriptBlockText|contains:
+            - 'IEX'
+            - 'Invoke-Expression'
+            - 'FromBase64String'
+            - 'iex('
+    condition: download and execute
+falsepositives:
+    - Legitimate automation sometimes downloads and dot-sources scripts; baseline trusted sources.
+level: high

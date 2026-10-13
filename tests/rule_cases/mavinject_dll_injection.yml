@@ -1,0 +1,15 @@
+rule: mavinject_dll_injection
+defaults:
+  Channel: Microsoft-Windows-Sysmon/Operational
+  EventID: 1
+cases:
+- name: injection flag
+  match: true
+  event:
+    Image: C:\Windows\System32\mavinject.exe
+    CommandLine: x INJECTRUNNING x
+- name: no injection flag
+  match: false
+  event:
+    Image: C:\Windows\System32\mavinject.exe
+    CommandLine: x

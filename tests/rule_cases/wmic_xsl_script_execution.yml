@@ -1,0 +1,20 @@
+rule: wmic_xsl_script_execution
+defaults:
+  Channel: Microsoft-Windows-Sysmon/Operational
+  EventID: 1
+cases:
+- name: format switch with stylesheet
+  match: true
+  event:
+    Image: C:\Windows\System32\wbem\wmic.exe
+    CommandLine: x /format:x.xsl
+- name: 'regression: stylesheet name without the switch (duplicate-key bug)'
+  match: false
+  event:
+    Image: C:\Windows\System32\wbem\wmic.exe
+    CommandLine: x x.xsl
+- name: built-in format
+  match: false
+  event:
+    Image: C:\Windows\System32\wbem\wmic.exe
+    CommandLine: x /format:list

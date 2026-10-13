@@ -1,0 +1,35 @@
+title: Scheduled Task Created or Updated
+id: 0761f1f9-44d5-4bb5-9558-6a7dd7381e26
+status: experimental
+description: |
+    Detects creation or update of a scheduled task, a widely used persistence and remote-execution mechanism.
+    It covers both the Security audit event for task registration and command-line creation with
+    schtasks, so it fires whichever telemetry is available.
+references:
+    - https://attack.mitre.org/techniques/T1053/005/
+author: Hugo
+date: 2026-10-13
+tags:
+    - attack.t1053.005
+    - attack.persistence
+    - attack.execution
+logsource:
+    product: windows
+    service: security
+detection:
+    audit_event:
+        EventID:
+            - 4698
+            - 4702
+    filter_builtin_maintenance:
+        SubjectUserName|endswith: '$'
+        TaskName|startswith: '\Microsoft\Windows\'
+    filter_onedrive_updater:
+        TaskName|startswith: '\OneDrive Standalone Update Task'
+    condition: audit_event and not 1 of filter_*
+falsepositives:
+    - Software installation and management tooling create scheduled tasks routinely; baseline by task
+      name and the account that created them.
+    - Blind spot of the built-in filter - a task registered as SYSTEM under \Microsoft\Windows\ is
+      not reported; the schtasks command-line rule still sees it if schtasks.exe is used.
+level: medium

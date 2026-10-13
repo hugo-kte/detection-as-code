@@ -1,0 +1,32 @@
+title: WMIC Executing a Remote or Local XSL Script
+id: da9df3c1-4e29-42d4-9453-05ba976a8b75
+status: experimental
+description: |
+    Detects wmic.exe being told to format its output with a custom XSL stylesheet, which can embed and
+    run script ("Squiblytwo"). The rule keys on the format switch together with an XSL reference or a
+    remote URL, independent of the stylesheet contents.
+references:
+    - https://attack.mitre.org/techniques/T1220/
+author: Hugo
+date: 2026-10-13
+tags:
+    - attack.t1220
+    - attack.defense-evasion
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection:
+        Image|endswith: '\wmic.exe'
+        CommandLine|contains:
+            - '/format:'
+            - '-format:'
+    stylesheet:
+        CommandLine|contains:
+            - '.xsl'
+            - 'http://'
+            - 'https://'
+    condition: selection and stylesheet
+falsepositives:
+    - Custom administrative XSL formatters are uncommon but possible; baseline them.
+level: medium

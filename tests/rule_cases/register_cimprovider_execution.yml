@@ -1,0 +1,15 @@
+rule: register_cimprovider_execution
+defaults:
+  Channel: Microsoft-Windows-Sysmon/Operational
+  EventID: 1
+cases:
+- name: path argument
+  match: true
+  event:
+    Image: C:\Windows\System32\Register-CimProvider.exe
+    CommandLine: x -Path x
+- name: no path argument
+  match: false
+  event:
+    Image: C:\Windows\System32\Register-CimProvider.exe
+    CommandLine: x

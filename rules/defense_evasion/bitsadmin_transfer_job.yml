@@ -1,0 +1,28 @@
+title: File Download via BITS Job
+id: 4aab1cf9-ea1f-421f-b808-8b43a0b4ca9b
+status: experimental
+description: |
+    Detects use of the Background Intelligent Transfer Service through bitsadmin to create a transfer
+    or add a file, a stealthy download channel that survives reboots and blends into normal update
+    traffic. The rule matches the transfer verbs on bitsadmin, independent of the URL.
+references:
+    - https://attack.mitre.org/techniques/T1197/
+author: Hugo
+date: 2026-10-13
+tags:
+    - attack.t1197
+    - attack.defense-evasion
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection:
+        Image|endswith: '\bitsadmin.exe'
+        CommandLine|contains:
+            - '/transfer'
+            - '/addfile'
+            - '/create'
+    condition: selection
+falsepositives:
+    - Some software distribution tools wrap bitsadmin; baseline known updaters.
+level: medium

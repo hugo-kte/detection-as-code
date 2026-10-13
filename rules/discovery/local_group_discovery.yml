@@ -1,0 +1,32 @@
+title: Local or Domain Group Membership Discovery via net
+id: 4a1854b2-c9cb-451d-9c57-1038080a14ab
+status: experimental
+description: |
+    Detects enumeration of privileged group membership with the net utility (local Administrators or
+    the Domain Admins group). Attackers map who holds privileged access early in an intrusion to plan
+    escalation and lateral movement.
+references:
+    - https://attack.mitre.org/techniques/T1069/001/
+    - https://attack.mitre.org/techniques/T1069/002/
+author: Hugo
+date: 2026-10-13
+tags:
+    - attack.t1069.001
+    - attack.t1069.002
+    - attack.discovery
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection:
+        Image|endswith:
+            - '\net.exe'
+            - '\net1.exe'
+        CommandLine|contains:
+            - 'localgroup'
+            - 'group'
+    condition: selection
+falsepositives:
+    - Administrators and inventory scripts enumerate groups; volume and context separate routine use
+      from reconnaissance.
+level: low

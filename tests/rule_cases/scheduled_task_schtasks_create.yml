@@ -1,0 +1,15 @@
+rule: scheduled_task_schtasks_create
+defaults:
+  Channel: Microsoft-Windows-Sysmon/Operational
+  EventID: 1
+cases:
+- name: create verb
+  match: true
+  event:
+    Image: C:\Windows\System32\schtasks.exe
+    CommandLine: x /create x
+- name: query verb
+  match: false
+  event:
+    Image: C:\Windows\System32\schtasks.exe
+    CommandLine: x /query

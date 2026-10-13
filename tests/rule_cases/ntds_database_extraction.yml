@@ -1,0 +1,25 @@
+rule: ntds_database_extraction
+defaults:
+  Channel: Microsoft-Windows-Sysmon/Operational
+  EventID: 1
+cases:
+- name: install-from-media keyword
+  match: true
+  event:
+    Image: C:\Windows\System32\ntdsutil.exe
+    CommandLine: x ifm x
+- name: database file referenced
+  match: true
+  event:
+    Image: C:\Windows\System32\cmd.exe
+    CommandLine: x ntds.dit x
+- name: shadow copy creation
+  match: true
+  event:
+    Image: C:\Windows\System32\vssadmin.exe
+    CommandLine: vssadmin create shadow x
+- name: unrelated directory tool use
+  match: false
+  event:
+    Image: C:\Windows\System32\ntdsutil.exe
+    CommandLine: x example x

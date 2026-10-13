@@ -1,0 +1,20 @@
+rule: netsh_firewall_rule_added
+defaults:
+  Channel: Microsoft-Windows-Sysmon/Operational
+  EventID: 1
+cases:
+- name: firewall rule added
+  match: true
+  event:
+    Image: C:\Windows\System32\netsh.exe
+    CommandLine: x firewall add rule x
+- name: 'regression: add rule outside firewall context (duplicate-key bug)'
+  match: false
+  event:
+    Image: C:\Windows\System32\netsh.exe
+    CommandLine: x interface add rule x
+- name: firewall rules listed
+  match: false
+  event:
+    Image: C:\Windows\System32\netsh.exe
+    CommandLine: x firewall show rule x

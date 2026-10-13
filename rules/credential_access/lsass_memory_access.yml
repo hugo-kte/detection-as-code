@@ -1,0 +1,46 @@
+title: LSASS Process Memory Accessed With Dump-Capable Rights
+id: 810085a8-95e9-4db0-b47c-8160cdfeddfa
+status: experimental
+description: |
+    Detects a process opening a handle to lsass.exe with the combination of read and query rights
+    that credential-dumping tools need to copy the process memory. The access rights, not the tool,
+    are what matter, so the rule is agnostic to how the memory is read. The Local Security Authority
+    Subsystem holds plaintext secrets, hashes and Kerberos tickets, making this a high-value target.
+references:
+    - https://attack.mitre.org/techniques/T1003/001/
+author: Hugo
+date: 2026-10-13
+tags:
+    - attack.t1003.001
+    - attack.credential-access
+logsource:
+    category: process_access
+    product: windows
+detection:
+    selection:
+        TargetImage|endswith: '\lsass.exe'
+        GrantedAccess:
+            - '0x1010'
+            - '0x1038'
+            - '0x1410'
+            - '0x1438'
+            - '0x143a'
+            - '0x1f1fff'
+            - '0x1f2fff'
+            - '0x1f3fff'
+            - '0x1fffff'
+    filter_system:
+        SourceImage:
+            - 'C:\Windows\System32\csrss.exe'
+            - 'C:\Windows\System32\wininit.exe'
+    filter_azure_guest_agent:
+        SourceImage|startswith: 'C:\WindowsAzure\'
+        SourceImage|endswith: '\CollectGuestLogs.exe'
+    filter_wmi_process_query:
+        SourceImage: 'C:\Windows\System32\wbem\WmiPrvSE.exe'
+        GrantedAccess: '0x1410'
+    condition: selection and not 1 of filter_*
+falsepositives:
+    - Endpoint protection, memory scanners and crash-dump tooling may legitimately read LSASS; tune
+      by allow-listing the specific signed SourceImage paths observed in the environment.
+level: high

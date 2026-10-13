@@ -1,0 +1,27 @@
+title: InstallUtil Uninstall Proxy Execution
+id: 2aaaa0c1-c549-44ae-84b5-dd6f5fcf8b19
+status: experimental
+description: |
+    Detects the .NET InstallUtil tool being invoked with the uninstall and logfile-suppression flags,
+    a proxy-execution pattern that runs attacker code in a Microsoft-signed binary while hiding output.
+    The rule keys on the flag combination rather than on the assembly being loaded.
+references:
+    - https://attack.mitre.org/techniques/T1218/004/
+author: Hugo
+date: 2026-10-13
+tags:
+    - attack.t1218.004
+    - attack.defense-evasion
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection:
+        Image|endswith: '\installutil.exe'
+        CommandLine|contains|all:
+            - '/logfile='
+            - '/u'
+    condition: selection
+falsepositives:
+    - Developer build and deployment pipelines that legitimately (un)install services.
+level: medium

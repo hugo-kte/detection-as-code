@@ -1,0 +1,13 @@
+rule: wmi_event_subscription
+defaults:
+  Channel: Microsoft-Windows-Sysmon/Operational
+  EventID: 19
+cases:
+- name: filter created
+  match: true
+  event:
+    Operation: Created
+- name: filter deleted
+  match: false
+  event:
+    Operation: Deleted

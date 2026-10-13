@@ -1,0 +1,15 @@
+rule: network_share_session_discovery
+defaults:
+  Channel: Microsoft-Windows-Sysmon/Operational
+  EventID: 1
+cases:
+- name: share enumeration
+  match: true
+  event:
+    Image: C:\Windows\System32\net.exe
+    CommandLine: net view x
+- name: unrelated net verb
+  match: false
+  event:
+    Image: C:\Windows\System32\net.exe
+    CommandLine: net time

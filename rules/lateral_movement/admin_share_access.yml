@@ -1,0 +1,28 @@
+title: Access to a Hidden Administrative Share
+id: 0eb44c5e-6724-4b52-857b-f373dcd0c49b
+status: experimental
+description: |
+    Detects a network client accessing a hidden administrative share (C$ or ADMIN$). IPC$, the named-pipe
+    share used by every RPC client, is deliberately not matched. Attackers use admin shares to stage tools and read or write files on remote hosts during
+    lateral movement. Requires the "Detailed File Share" audit subcategory.
+references:
+    - https://attack.mitre.org/techniques/T1021/002/
+author: Hugo
+date: 2026-10-13
+tags:
+    - attack.t1021.002
+    - attack.lateral-movement
+logsource:
+    product: windows
+    service: security
+detection:
+    selection:
+        EventID: 5145
+        ShareName|endswith:
+            - '\C$'
+            - '\ADMIN$'
+    condition: selection
+falsepositives:
+    - Administrative tooling, backup and software deployment use admin shares heavily; baseline by
+      source host and account, and alert on unexpected pairs.
+level: low

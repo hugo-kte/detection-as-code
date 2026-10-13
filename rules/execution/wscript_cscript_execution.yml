@@ -1,0 +1,35 @@
+title: Script Host Executing a Script File
+id: eebc918c-ed4f-434c-8dc6-170ccdb02749
+status: experimental
+description: |
+    Detects the Windows Script Host (wscript/cscript) running a VBScript, JScript or WSF file. Script
+    files are a common first-stage execution vector delivered by phishing and droppers.
+references:
+    - https://attack.mitre.org/techniques/T1059/005/
+author: Hugo
+date: 2026-10-13
+tags:
+    - attack.t1059.005
+    - attack.execution
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection:
+        Image|endswith:
+            - '\wscript.exe'
+            - '\cscript.exe'
+        CommandLine|contains:
+            - '.vbs'
+            - '.vbe'
+            - '.js'
+            - '.jse'
+            - '.wsf'
+    filter_monitoring_agent:
+        ParentImage|endswith: '\Microsoft Monitoring Agent\Agent\MonitoringHost.exe'
+    filter_network_diagnostics:
+        CommandLine|endswith: '\system32\gatherNetworkInfo.vbs'
+    condition: selection and not 1 of filter_*
+falsepositives:
+    - Enterprise logon and management scripts use the script host; baseline expected scripts per host.
+level: medium

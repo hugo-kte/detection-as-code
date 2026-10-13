@@ -1,0 +1,30 @@
+title: Regsvr32 Scriptlet or Remote COM Registration
+id: 7097d79a-2228-4af1-9ae0-d5e651218377
+status: experimental
+description: |
+    Detects regsvr32.exe registering a COM scriptlet (scrobj.dll) or fetching a remote scriptlet over
+    HTTP. This "Squiblydoo" style proxy execution runs attacker script through a trusted, signed
+    binary. The rule matches the scriptlet handler and remote URLs, not a specific payload.
+references:
+    - https://attack.mitre.org/techniques/T1218/010/
+author: Hugo
+date: 2026-10-13
+tags:
+    - attack.t1218.010
+    - attack.defense-evasion
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection:
+        Image|endswith: '\regsvr32.exe'
+    scriptlet:
+        CommandLine|contains:
+            - 'scrobj'
+            - '/i:http'
+            - '/i:ftp'
+            - '.sct'
+    condition: selection and scriptlet
+falsepositives:
+    - Installers occasionally register COM scriptlets locally; remote (/i:http) registration is rare.
+level: high

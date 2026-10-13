@@ -1,0 +1,15 @@
+rule: winrm_remote_execution
+defaults:
+  Channel: Microsoft-Windows-Sysmon/Operational
+  EventID: 1
+cases:
+- name: child of the remoting host
+  match: true
+  event:
+    ParentImage: C:\Windows\System32\wsmprovhost.exe
+    Image: C:\Windows\System32\whoami.exe
+- name: console host is filtered
+  match: false
+  event:
+    ParentImage: C:\Windows\System32\wsmprovhost.exe
+    Image: C:\Windows\System32\conhost.exe

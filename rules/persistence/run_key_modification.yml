@@ -1,0 +1,39 @@
+title: Autorun Registry Run Key Set
+id: e7cc9b15-c960-455a-a30d-29ac2aa507af
+status: experimental
+description: |
+    Detects a value being written under a CurrentVersion\Run or RunOnce key, the classic
+    autostart-on-logon persistence location. Both the user (HKCU) and machine (HKLM) hives are
+    covered. The rule reports the autostart location independent of the program being registered.
+references:
+    - https://attack.mitre.org/techniques/T1547/001/
+author: Hugo
+date: 2026-10-13
+tags:
+    - attack.t1547.001
+    - attack.persistence
+logsource:
+    category: registry_set
+    product: windows
+detection:
+    selection:
+        TargetObject|contains:
+            - '\CurrentVersion\Run\'
+            - '\CurrentVersion\RunOnce\'
+            - '\CurrentVersion\RunServices\'
+            - '\CurrentVersion\Policies\Explorer\Run\'
+    filter_defender_tray:
+        Image|startswith:
+            - 'C:\Program Files\Windows Defender\'
+            - 'C:\ProgramData\Microsoft\Windows Defender\Platform\'
+        Image|endswith: '\MsMpEng.exe'
+        TargetObject|endswith: '\Run\WindowsDefender'
+    filter_teams_autostart:
+        Image|endswith:
+            - '\AppData\Local\Microsoft\Teams\current\Teams.exe'
+            - '\AppData\Local\Microsoft\Teams\Update.exe'
+        TargetObject|endswith: '\Run\com.squirrel.Teams.Teams'
+    condition: selection and not 1 of filter_*
+falsepositives:
+    - Installers and management agents add Run keys; baseline the expected programs per host role.
+level: medium

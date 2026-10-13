@@ -1,0 +1,32 @@
+title: Service Installed to Run a Command Interpreter
+id: 6662c31b-1091-45d4-95aa-e7549312ed40
+status: experimental
+description: |
+    Detects a newly installed Windows service whose image path launches a command interpreter or
+    script host. Creating a short-lived service that runs cmd or PowerShell over the Service Control
+    Manager is the mechanism behind PsExec- and SMBExec-style remote execution.
+references:
+    - https://attack.mitre.org/techniques/T1021/002/
+author: Hugo
+date: 2026-10-13
+tags:
+    - attack.t1021.002
+    - attack.lateral-movement
+logsource:
+    product: windows
+    service: system
+detection:
+    selection:
+        EventID: 7045
+        ImagePath|contains:
+            - '%COMSPEC%'
+            - 'cmd.exe'
+            - 'cmd /c'
+            - 'powershell'
+            - 'pwsh'
+            - 'rundll32'
+            - '-enc'
+    condition: selection
+falsepositives:
+    - Some management agents install helper services that wrap cmd; baseline by service name and path.
+level: high

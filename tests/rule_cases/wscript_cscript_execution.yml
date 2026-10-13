@@ -1,0 +1,21 @@
+rule: wscript_cscript_execution
+defaults:
+  Channel: Microsoft-Windows-Sysmon/Operational
+  EventID: 1
+cases:
+- name: script file executed
+  match: true
+  event:
+    Image: C:\Windows\System32\wscript.exe
+    CommandLine: x C:\Temp\x.vbs
+- name: monitoring agent is filtered
+  match: false
+  event:
+    ParentImage: C:\Program Files\Microsoft Monitoring Agent\Agent\MonitoringHost.exe
+    Image: C:\Windows\System32\cscript.exe
+    CommandLine: x example.vbs
+- name: no script file
+  match: false
+  event:
+    Image: C:\Windows\System32\cscript.exe
+    CommandLine: x

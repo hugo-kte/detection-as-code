@@ -1,0 +1,31 @@
+title: Security Event Log Cleared or Relocated via wevtutil
+id: 3c8e1a25-9f4b-4d88-a013-4b2d7f0e5a33
+status: experimental
+description: |
+    Detects wevtutil being used to clear an event log or to change where a log is written. Both remove
+    or divert the record of recent activity, a common defense-evasion and anti-forensics step. The rule
+    keys on the clear and set-log-filename operations.
+references:
+    - https://attack.mitre.org/techniques/T1070/001/
+    - https://attack.mitre.org/techniques/T1562/002/
+author: Hugo
+date: 2026-10-13
+tags:
+    - attack.t1070.001
+    - attack.t1562.002
+    - attack.defense-evasion
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection:
+        Image|endswith: '\wevtutil.exe'
+        CommandLine|contains:
+            - 'clear-log'
+            - ' cl '
+            - '/logfilename:'
+            - '/e:false'
+    condition: selection
+falsepositives:
+    - Log rotation or maintenance by administrators; clearing the Security log is rarely routine.
+level: high

@@ -1,0 +1,805 @@
+{
+  "name": "detection-as-code coverage",
+  "versions": {
+    "layer": "4.5",
+    "navigator": "5.1.0"
+  },
+  "domain": "enterprise-attack",
+  "description": "Sigma rules of hugo-kte/detection-as-code, scored by validation against recorded ATT&CK telemetry (OTRF Security-Datasets).",
+  "filters": {
+    "platforms": [
+      "Windows"
+    ]
+  },
+  "sorting": 3,
+  "layout": {
+    "layout": "side",
+    "showName": true,
+    "showID": true
+  },
+  "hideDisabled": false,
+  "techniques": [
+    {
+      "techniqueID": "T1003",
+      "score": 2,
+      "color": "#eda100",
+      "comment": "Rules: dcsync_replication, lsass_dump_via_comsvcs, lsass_memory_access, ntds_database_extraction, registry_hive_dump. Recordings detected: 0/1",
+      "enabled": true,
+      "showSubtechniques": true,
+      "metadata": [
+        {
+          "name": "rules",
+          "value": "dcsync_replication, lsass_dump_via_comsvcs, lsass_memory_access, ntds_database_extraction, registry_hive_dump"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1003.001",
+      "score": 3,
+      "color": "#1baf7a",
+      "comment": "Rules: lsass_dump_via_comsvcs, lsass_memory_access. Recordings detected: 5/5",
+      "enabled": true,
+      "showSubtechniques": true,
+      "metadata": [
+        {
+          "name": "rules",
+          "value": "lsass_dump_via_comsvcs, lsass_memory_access"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1003.002",
+      "score": 3,
+      "color": "#1baf7a",
+      "comment": "Rules: registry_hive_dump. Recordings detected: 3/4",
+      "enabled": true,
+      "showSubtechniques": true,
+      "metadata": [
+        {
+          "name": "rules",
+          "value": "registry_hive_dump"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1003.003",
+      "score": 3,
+      "color": "#1baf7a",
+      "comment": "Rules: ntds_database_extraction. Recordings detected: 1/4",
+      "enabled": true,
+      "showSubtechniques": true,
+      "metadata": [
+        {
+          "name": "rules",
+          "value": "ntds_database_extraction"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1003.004",
+      "score": 3,
+      "color": "#1baf7a",
+      "comment": "Rules: registry_hive_dump. Recordings detected: 1/2",
+      "enabled": true,
+      "showSubtechniques": true,
+      "metadata": [
+        {
+          "name": "rules",
+          "value": "registry_hive_dump"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1003.006",
+      "score": 3,
+      "color": "#1baf7a",
+      "comment": "Rules: dcsync_replication. Recordings detected: 2/2",
+      "enabled": true,
+      "showSubtechniques": true,
+      "metadata": [
+        {
+          "name": "rules",
+          "value": "dcsync_replication"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1012",
+      "score": 1,
+      "color": "#e1e0d9",
+      "comment": "No rule yet. Exercised by 1 recording(s)",
+      "enabled": true,
+      "showSubtechniques": true,
+      "metadata": [
+        {
+          "name": "rules",
+          "value": "-"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1021",
+      "score": 3,
+      "color": "#1baf7a",
+      "comment": "Rules: admin_share_access, dcom_lateral_execution, remote_service_exec_scm, winrm_remote_execution. Recordings detected: 1/1",
+      "enabled": true,
+      "showSubtechniques": true,
+      "metadata": [
+        {
+          "name": "rules",
+          "value": "admin_share_access, dcom_lateral_execution, remote_service_exec_scm, winrm_remote_execution"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1021.002",
+      "score": 3,
+      "color": "#1baf7a",
+      "comment": "Rules: admin_share_access, remote_service_exec_scm. Recordings detected: 2/7",
+      "enabled": true,
+      "showSubtechniques": true,
+      "metadata": [
+        {
+          "name": "rules",
+          "value": "admin_share_access, remote_service_exec_scm"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1021.003",
+      "score": 3,
+      "color": "#1baf7a",
+      "comment": "Rules: dcom_lateral_execution. Recordings detected: 2/4",
+      "enabled": true,
+      "showSubtechniques": true,
+      "metadata": [
+        {
+          "name": "rules",
+          "value": "dcom_lateral_execution"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1021.006",
+      "score": 3,
+      "color": "#1baf7a",
+      "comment": "Rules: winrm_remote_execution. Recordings detected: 2/3",
+      "enabled": true,
+      "showSubtechniques": true,
+      "metadata": [
+        {
+          "name": "rules",
+          "value": "winrm_remote_execution"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1037.001",
+      "score": 3,
+      "color": "#1baf7a",
+      "comment": "Rules: logon_script_userinit. Recordings detected: 1/1",
+      "enabled": true,
+      "showSubtechniques": true,
+      "metadata": [
+        {
+          "name": "rules",
+          "value": "logon_script_userinit"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1047",
+      "score": 3,
+      "color": "#1baf7a",
+      "comment": "Rules: wmi_remote_process_creation. Recordings detected: 3/6",
+      "enabled": true,
+      "showSubtechniques": true,
+      "metadata": [
+        {
+          "name": "rules",
+          "value": "wmi_remote_process_creation"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1049",
+      "score": 2,
+      "color": "#eda100",
+      "comment": "Rules: network_share_session_discovery. Recordings detected: 0/1",
+      "enabled": true,
+      "showSubtechniques": true,
+      "metadata": [
+        {
+          "name": "rules",
+          "value": "network_share_session_discovery"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1053.005",
+      "score": 3,
+      "color": "#1baf7a",
+      "comment": "Rules: scheduled_task_creation, scheduled_task_schtasks_create. Recordings detected: 4/4",
+      "enabled": true,
+      "showSubtechniques": true,
+      "metadata": [
+        {
+          "name": "rules",
+          "value": "scheduled_task_creation, scheduled_task_schtasks_create"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1055",
+      "score": 3,
+      "color": "#1baf7a",
+      "comment": "Rules: create_remote_thread_injection, mavinject_dll_injection. Recordings detected: 1/3",
+      "enabled": true,
+      "showSubtechniques": true,
+      "metadata": [
+        {
+          "name": "rules",
+          "value": "create_remote_thread_injection, mavinject_dll_injection"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1055.001",
+      "score": 3,
+      "color": "#1baf7a",
+      "comment": "Rules: create_remote_thread_injection, mavinject_dll_injection. Recordings detected: 1/1",
+      "enabled": true,
+      "showSubtechniques": true,
+      "metadata": [
+        {
+          "name": "rules",
+          "value": "create_remote_thread_injection, mavinject_dll_injection"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1055.002",
+      "score": 3,
+      "color": "#1baf7a",
+      "comment": "Rules: create_remote_thread_injection, mavinject_dll_injection. Recordings detected: 1/1",
+      "enabled": true,
+      "showSubtechniques": true,
+      "metadata": [
+        {
+          "name": "rules",
+          "value": "create_remote_thread_injection, mavinject_dll_injection"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1055.003",
+      "score": 3,
+      "color": "#1baf7a",
+      "comment": "Rules: create_remote_thread_injection, mavinject_dll_injection. Recordings detected: 1/1",
+      "enabled": true,
+      "showSubtechniques": true,
+      "metadata": [
+        {
+          "name": "rules",
+          "value": "create_remote_thread_injection, mavinject_dll_injection"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1056.002",
+      "score": 1,
+      "color": "#e1e0d9",
+      "comment": "No rule yet. Exercised by 1 recording(s)",
+      "enabled": true,
+      "showSubtechniques": true,
+      "metadata": [
+        {
+          "name": "rules",
+          "value": "-"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1059",
+      "score": 2,
+      "color": "#eda100",
+      "comment": "Rules: powershell_download_cradle, wscript_cscript_execution. Recordings detected: 0/2",
+      "enabled": true,
+      "showSubtechniques": true,
+      "metadata": [
+        {
+          "name": "rules",
+          "value": "powershell_download_cradle, wscript_cscript_execution"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1059.001",
+      "score": 2,
+      "color": "#eda100",
+      "comment": "Rules: powershell_download_cradle. Recordings detected: 0/1",
+      "enabled": true,
+      "showSubtechniques": true,
+      "metadata": [
+        {
+          "name": "rules",
+          "value": "powershell_download_cradle"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1059.005",
+      "score": 3,
+      "color": "#1baf7a",
+      "comment": "Rules: wscript_cscript_execution. Recordings detected: 1/1",
+      "enabled": true,
+      "showSubtechniques": true,
+      "metadata": [
+        {
+          "name": "rules",
+          "value": "wscript_cscript_execution"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1069.001",
+      "score": 3,
+      "color": "#1baf7a",
+      "comment": "Rules: local_group_discovery. Recordings detected: 1/2",
+      "enabled": true,
+      "showSubtechniques": true,
+      "metadata": [
+        {
+          "name": "rules",
+          "value": "local_group_discovery"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1069.002",
+      "score": 3,
+      "color": "#1baf7a",
+      "comment": "Rules: local_group_discovery. Recordings detected: 1/2",
+      "enabled": true,
+      "showSubtechniques": true,
+      "metadata": [
+        {
+          "name": "rules",
+          "value": "local_group_discovery"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1070.001",
+      "score": 2,
+      "color": "#eda100",
+      "comment": "Rules: eventlog_cleared_or_relocated",
+      "enabled": true,
+      "showSubtechniques": true,
+      "metadata": [
+        {
+          "name": "rules",
+          "value": "eventlog_cleared_or_relocated"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1087.001",
+      "score": 3,
+      "color": "#1baf7a",
+      "comment": "Rules: account_discovery_net. Recordings detected: 1/1",
+      "enabled": true,
+      "showSubtechniques": true,
+      "metadata": [
+        {
+          "name": "rules",
+          "value": "account_discovery_net"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1087.002",
+      "score": 3,
+      "color": "#1baf7a",
+      "comment": "Rules: account_discovery_net. Recordings detected: 1/1",
+      "enabled": true,
+      "showSubtechniques": true,
+      "metadata": [
+        {
+          "name": "rules",
+          "value": "account_discovery_net"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1110.003",
+      "score": 1,
+      "color": "#e1e0d9",
+      "comment": "No rule yet. Exercised by 1 recording(s)",
+      "enabled": true,
+      "showSubtechniques": true,
+      "metadata": [
+        {
+          "name": "rules",
+          "value": "-"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1112",
+      "score": 1,
+      "color": "#e1e0d9",
+      "comment": "No rule yet. Exercised by 1 recording(s)",
+      "enabled": true,
+      "showSubtechniques": true,
+      "metadata": [
+        {
+          "name": "rules",
+          "value": "-"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1123",
+      "score": 1,
+      "color": "#e1e0d9",
+      "comment": "No rule yet. Exercised by 1 recording(s)",
+      "enabled": true,
+      "showSubtechniques": true,
+      "metadata": [
+        {
+          "name": "rules",
+          "value": "-"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1135",
+      "score": 2,
+      "color": "#eda100",
+      "comment": "Rules: network_share_session_discovery. Recordings detected: 0/1",
+      "enabled": true,
+      "showSubtechniques": true,
+      "metadata": [
+        {
+          "name": "rules",
+          "value": "network_share_session_discovery"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1197",
+      "score": 3,
+      "color": "#1baf7a",
+      "comment": "Rules: bitsadmin_transfer_job. Recordings detected: 1/1",
+      "enabled": true,
+      "showSubtechniques": true,
+      "metadata": [
+        {
+          "name": "rules",
+          "value": "bitsadmin_transfer_job"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1210",
+      "score": 1,
+      "color": "#e1e0d9",
+      "comment": "No rule yet. Exercised by 1 recording(s)",
+      "enabled": true,
+      "showSubtechniques": true,
+      "metadata": [
+        {
+          "name": "rules",
+          "value": "-"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1218",
+      "score": 3,
+      "color": "#1baf7a",
+      "comment": "Rules: cmstp_proxy_execution, compiled_html_help_execution, installutil_proxy_execution, mshta_suspicious_execution, register_cimprovider_execution, regsvr32_scriptlet_execution. Recordings detected: 1/2",
+      "enabled": true,
+      "showSubtechniques": true,
+      "metadata": [
+        {
+          "name": "rules",
+          "value": "cmstp_proxy_execution, compiled_html_help_execution, installutil_proxy_execution, mshta_suspicious_execution, register_cimprovider_execution, regsvr32_scriptlet_execution"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1218.001",
+      "score": 3,
+      "color": "#1baf7a",
+      "comment": "Rules: compiled_html_help_execution, register_cimprovider_execution. Recordings detected: 1/1",
+      "enabled": true,
+      "showSubtechniques": true,
+      "metadata": [
+        {
+          "name": "rules",
+          "value": "compiled_html_help_execution, register_cimprovider_execution"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1218.002",
+      "score": 2,
+      "color": "#eda100",
+      "comment": "Rules: register_cimprovider_execution. Recordings detected: 0/1",
+      "enabled": true,
+      "showSubtechniques": true,
+      "metadata": [
+        {
+          "name": "rules",
+          "value": "register_cimprovider_execution"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1218.003",
+      "score": 3,
+      "color": "#1baf7a",
+      "comment": "Rules: cmstp_proxy_execution, register_cimprovider_execution. Recordings detected: 1/1",
+      "enabled": true,
+      "showSubtechniques": true,
+      "metadata": [
+        {
+          "name": "rules",
+          "value": "cmstp_proxy_execution, register_cimprovider_execution"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1218.004",
+      "score": 3,
+      "color": "#1baf7a",
+      "comment": "Rules: installutil_proxy_execution, register_cimprovider_execution. Recordings detected: 1/1",
+      "enabled": true,
+      "showSubtechniques": true,
+      "metadata": [
+        {
+          "name": "rules",
+          "value": "installutil_proxy_execution, register_cimprovider_execution"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1218.005",
+      "score": 3,
+      "color": "#1baf7a",
+      "comment": "Rules: mshta_suspicious_execution, register_cimprovider_execution. Recordings detected: 3/3",
+      "enabled": true,
+      "showSubtechniques": true,
+      "metadata": [
+        {
+          "name": "rules",
+          "value": "mshta_suspicious_execution, register_cimprovider_execution"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1218.010",
+      "score": 3,
+      "color": "#1baf7a",
+      "comment": "Rules: register_cimprovider_execution, regsvr32_scriptlet_execution. Recordings detected: 1/1",
+      "enabled": true,
+      "showSubtechniques": true,
+      "metadata": [
+        {
+          "name": "rules",
+          "value": "register_cimprovider_execution, regsvr32_scriptlet_execution"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1220",
+      "score": 3,
+      "color": "#1baf7a",
+      "comment": "Rules: wmic_xsl_script_execution. Recordings detected: 1/1",
+      "enabled": true,
+      "showSubtechniques": true,
+      "metadata": [
+        {
+          "name": "rules",
+          "value": "wmic_xsl_script_execution"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1222.001",
+      "score": 1,
+      "color": "#e1e0d9",
+      "comment": "No rule yet. Exercised by 1 recording(s)",
+      "enabled": true,
+      "showSubtechniques": true,
+      "metadata": [
+        {
+          "name": "rules",
+          "value": "-"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1505.003",
+      "score": 3,
+      "color": "#1baf7a",
+      "comment": "Rules: webshell_server_process_spawn. Recordings detected: 1/1",
+      "enabled": true,
+      "showSubtechniques": true,
+      "metadata": [
+        {
+          "name": "rules",
+          "value": "webshell_server_process_spawn"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1518",
+      "score": 1,
+      "color": "#e1e0d9",
+      "comment": "No rule yet. Exercised by 1 recording(s)",
+      "enabled": true,
+      "showSubtechniques": true,
+      "metadata": [
+        {
+          "name": "rules",
+          "value": "-"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1543.003",
+      "score": 3,
+      "color": "#1baf7a",
+      "comment": "Rules: service_binary_path_modification. Recordings detected: 1/1",
+      "enabled": true,
+      "showSubtechniques": true,
+      "metadata": [
+        {
+          "name": "rules",
+          "value": "service_binary_path_modification"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1546.003",
+      "score": 3,
+      "color": "#1baf7a",
+      "comment": "Rules: wmi_event_subscription. Recordings detected: 1/1",
+      "enabled": true,
+      "showSubtechniques": true,
+      "metadata": [
+        {
+          "name": "rules",
+          "value": "wmi_event_subscription"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1547.001",
+      "score": 3,
+      "color": "#1baf7a",
+      "comment": "Rules: run_key_modification. Recordings detected: 2/2",
+      "enabled": true,
+      "showSubtechniques": true,
+      "metadata": [
+        {
+          "name": "rules",
+          "value": "run_key_modification"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1548.002",
+      "score": 3,
+      "color": "#1baf7a",
+      "comment": "Rules: uac_bypass_fodhelper. Recordings detected: 1/1",
+      "enabled": true,
+      "showSubtechniques": true,
+      "metadata": [
+        {
+          "name": "rules",
+          "value": "uac_bypass_fodhelper"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1550.002",
+      "score": 1,
+      "color": "#e1e0d9",
+      "comment": "No rule yet. Exercised by 1 recording(s)",
+      "enabled": true,
+      "showSubtechniques": true,
+      "metadata": [
+        {
+          "name": "rules",
+          "value": "-"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1558.003",
+      "score": 2,
+      "color": "#eda100",
+      "comment": "Rules: rubeus_kerberos_theft. Recordings detected: 0/1",
+      "enabled": true,
+      "showSubtechniques": true,
+      "metadata": [
+        {
+          "name": "rules",
+          "value": "rubeus_kerberos_theft"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1562.002",
+      "score": 3,
+      "color": "#1baf7a",
+      "comment": "Rules: audit_policy_disabled, disable_cmdline_audit_logging, disable_eventlog_via_service_registry, eventlog_cleared_or_relocated, eventlog_service_disabled_powershell, stop_eventlog_minint_key. Recordings detected: 17/17",
+      "enabled": true,
+      "showSubtechniques": true,
+      "metadata": [
+        {
+          "name": "rules",
+          "value": "audit_policy_disabled, disable_cmdline_audit_logging, disable_eventlog_via_service_registry, eventlog_cleared_or_relocated, eventlog_service_disabled_powershell, stop_eventlog_minint_key"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1562.004",
+      "score": 3,
+      "color": "#1baf7a",
+      "comment": "Rules: netsh_firewall_rule_added. Recordings detected: 1/1",
+      "enabled": true,
+      "showSubtechniques": true,
+      "metadata": [
+        {
+          "name": "rules",
+          "value": "netsh_firewall_rule_added"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1574.001",
+      "score": 1,
+      "color": "#e1e0d9",
+      "comment": "No rule yet. Exercised by 1 recording(s)",
+      "enabled": true,
+      "showSubtechniques": true,
+      "metadata": [
+        {
+          "name": "rules",
+          "value": "-"
+        }
+      ]
+    }
+  ],
+  "gradient": {
+    "colors": [
+      "#e1e0d9",
+      "#eda100",
+      "#1baf7a"
+    ],
+    "minValue": 1,
+    "maxValue": 3
+  },
+  "legendItems": [
+    {
+      "label": "Rule validated on recorded telemetry",
+      "color": "#1baf7a"
+    },
+    {
+      "label": "Rule written, not validated",
+      "color": "#eda100"
+    },
+    {
+      "label": "Recorded, no rule",
+      "color": "#e1e0d9"
+    }
+  ],
+  "showTacticRowBackground": true,
+  "tacticRowBackground": "#dddddd",
+  "selectTechniquesAcrossTactics": true
+}

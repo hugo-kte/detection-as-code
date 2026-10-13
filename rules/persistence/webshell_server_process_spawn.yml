@@ -1,0 +1,36 @@
+title: Web Server Process Spawning a Command Shell
+id: f8f29666-f2a7-4e0c-bc93-0d7f9deaed18
+status: experimental
+description: |
+    Detects a web server worker process (IIS w3wp, Exchange worker processes) spawning a command shell
+    or reconnaissance utility. This parent/child relationship is the generic footprint of a web shell
+    executing operating-system commands, independent of the shell's contents.
+references:
+    - https://attack.mitre.org/techniques/T1505/003/
+author: Hugo
+date: 2026-10-13
+tags:
+    - attack.t1505.003
+    - attack.persistence
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection:
+        ParentImage|endswith:
+            - '\w3wp.exe'
+            - '\UMWorkerProcess.exe'
+            - '\httpd.exe'
+        Image|endswith:
+            - '\cmd.exe'
+            - '\powershell.exe'
+            - '\pwsh.exe'
+            - '\net.exe'
+            - '\net1.exe'
+            - '\whoami.exe'
+            - '\nltest.exe'
+            - '\systeminfo.exe'
+    condition: selection
+falsepositives:
+    - A few web applications legitimately shell out; baseline the specific commands per application.
+level: high

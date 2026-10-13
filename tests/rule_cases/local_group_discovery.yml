@@ -1,0 +1,15 @@
+rule: local_group_discovery
+defaults:
+  Channel: Microsoft-Windows-Sysmon/Operational
+  EventID: 1
+cases:
+- name: group enumeration
+  match: true
+  event:
+    Image: C:\Windows\System32\net.exe
+    CommandLine: net localgroup x
+- name: unrelated net verb
+  match: false
+  event:
+    Image: C:\Windows\System32\net.exe
+    CommandLine: net time

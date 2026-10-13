@@ -1,0 +1,20 @@
+rule: mshta_suspicious_execution
+defaults:
+  Channel: Microsoft-Windows-Sysmon/Operational
+  EventID: 1
+cases:
+- name: remote content
+  match: true
+  event:
+    Image: C:\Windows\System32\mshta.exe
+    CommandLine: x https://example.invalid/x
+- name: local application file
+  match: true
+  event:
+    Image: C:\Windows\System32\mshta.exe
+    CommandLine: x C:\Temp\x.hta
+- name: no script or remote argument
+  match: false
+  event:
+    Image: C:\Windows\System32\mshta.exe
+    CommandLine: x

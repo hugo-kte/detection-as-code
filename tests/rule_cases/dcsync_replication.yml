@@ -1,0 +1,20 @@
+rule: dcsync_replication
+defaults:
+  Channel: Security
+  EventID: 4662
+cases:
+- name: replication right requested by a user
+  match: true
+  event:
+    SubjectUserName: example-user
+    Properties: x {1131f6aa-9c07-11d1-f79f-00c04fc2dcd2} x
+- name: domain controller computer account is filtered
+  match: false
+  event:
+    SubjectUserName: EXAMPLE-DC$
+    Properties: x {1131f6ad-9c07-11d1-f79f-00c04fc2dcd2} x
+- name: other directory property
+  match: false
+  event:
+    SubjectUserName: example-user
+    Properties: x {00000000-0000-0000-0000-000000000000} x

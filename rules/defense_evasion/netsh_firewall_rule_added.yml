@@ -1,0 +1,31 @@
+title: Windows Firewall Rule Added via Netsh
+id: 5727fe06-4b8d-4c14-a708-2e5a4ed22766
+status: experimental
+description: |
+    Detects netsh being used to add a Windows Firewall rule or open ports. Attackers relax the host
+    firewall to allow inbound tooling, proxying or lateral movement. The rule matches the firewall
+    add-rule and port-opening verbs on netsh.
+references:
+    - https://attack.mitre.org/techniques/T1562/004/
+author: Hugo
+date: 2026-10-13
+tags:
+    - attack.t1562.004
+    - attack.defense-evasion
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection:
+        Image|endswith: '\netsh.exe'
+        CommandLine|contains: 'firewall'
+    add_rule:
+        CommandLine|contains:
+            - 'add rule'
+            - 'add portopening'
+            - 'allowedprogram'
+    condition: selection and add_rule
+falsepositives:
+    - Administrators and installers add firewall rules; correlate with the account and the program
+      being allowed.
+level: medium

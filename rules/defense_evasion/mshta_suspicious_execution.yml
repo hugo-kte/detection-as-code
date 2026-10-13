@@ -1,0 +1,32 @@
+title: Mshta Executing Script or Remote Content
+id: 11be7228-f92d-4599-851c-9fb9019ac7dc
+status: experimental
+description: |
+    Detects the signed binary mshta.exe being used to run inline script or fetch remote content, a
+    proxy-execution technique that runs code outside normal script interpreters. The rule keys on the
+    script protocol handlers and remote URLs mshta accepts, independent of the payload.
+references:
+    - https://attack.mitre.org/techniques/T1218/005/
+author: Hugo
+date: 2026-10-13
+tags:
+    - attack.t1218.005
+    - attack.defense-evasion
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection:
+        Image|endswith: '\mshta.exe'
+        CommandLine|contains:
+            - 'javascript:'
+            - 'vbscript:'
+            - 'about:'
+            - 'http://'
+            - 'https://'
+            - '.sct'
+            - '.hta'
+    condition: selection
+falsepositives:
+    - A small number of legacy enterprise applications ship HTA front-ends; baseline them.
+level: high

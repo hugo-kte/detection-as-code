@@ -1,0 +1,15 @@
+rule: create_remote_thread_injection
+defaults:
+  Channel: Microsoft-Windows-Sysmon/Operational
+  EventID: 8
+cases:
+- name: thread created by an unknown process
+  match: true
+  event:
+    SourceImage: C:\Temp\example.exe
+    TargetImage: C:\Windows\System32\notepad.exe
+- name: session manager is filtered
+  match: false
+  event:
+    SourceImage: C:\Windows\System32\csrss.exe
+    TargetImage: C:\Windows\System32\svchost.exe

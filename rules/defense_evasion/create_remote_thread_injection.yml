@@ -1,0 +1,34 @@
+title: Remote Thread Created in Another Process
+id: 1a6f3b2e-5d2c-45a1-9b1e-6d0f5c4a7e11
+status: experimental
+description: |
+    Detects a thread being created in a process other than the one that created it, the Sysmon view of
+    code injection. Injecting a thread into a living process is used to run code under the identity of
+    that process and to evade controls. A small set of legitimate OS components that routinely do this
+    is filtered out so the rule reports the anomalous cases.
+references:
+    - https://attack.mitre.org/techniques/T1055/
+author: Hugo
+date: 2026-10-13
+tags:
+    - attack.t1055
+    - attack.defense-evasion
+    - attack.privilege-escalation
+logsource:
+    category: create_remote_thread
+    product: windows
+detection:
+    selection:
+        SourceImage|exists: true
+    filter_system:
+        SourceImage|endswith:
+            - '\csrss.exe'
+            - '\wininit.exe'
+            - '\services.exe'
+            - '\winlogon.exe'
+            - '\dwm.exe'
+    condition: selection and not filter_system
+falsepositives:
+    - Some security products and debuggers create remote threads; baseline the specific signed
+      SourceImage paths observed and add them to the filter.
+level: high

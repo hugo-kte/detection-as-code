@@ -1,0 +1,1104 @@
+{
+  "data": {
+    "repo": "OTRF/Security-Datasets",
+    "commit": "d9d40ef123d2c87d5d3df28c96bcab4f0faccc87"
+  },
+  "rules": 41,
+  "recordings": {
+    "total": 114,
+    "scored": 113,
+    "duplicates_excluded": [
+      "windows/lateral_movement/host/empire_wmic_add_user_backdoor.zip"
+    ],
+    "labelled": 106,
+    "unlabelled": 7,
+    "events": 774034
+  },
+  "detection": {
+    "in_scope": 97,
+    "detected": 75,
+    "detection_rate": 0.7732,
+    "in_scope_with_any_alert": 89,
+    "missed_telemetry_absent": 3,
+    "missed_no_rule_match": 19
+  },
+  "alerts": {
+    "total": 499,
+    "expected": 274,
+    "off_target_attack": 72,
+    "false_positive": 153,
+    "unreviewed": 0,
+    "false_positive_share": 0.3066
+  },
+  "off_target_signatures": {
+    "total": 51,
+    "benign": 29,
+    "attack": 22,
+    "unreviewed": 0,
+    "stale_verdicts": 0
+  },
+  "rules_without_validated_detection": [
+    "network_share_session_discovery",
+    "powershell_download_cradle",
+    "rubeus_kerberos_theft"
+  ],
+  "per_tactic": {
+    "credential_access": {
+      "in_scope": 19,
+      "detected": 12,
+      "missed_no_rule_match": 6,
+      "missed_telemetry_absent": 1,
+      "detection_rate": 0.6316
+    },
+    "defense_evasion": {
+      "in_scope": 36,
+      "detected": 33,
+      "missed_no_rule_match": 3,
+      "missed_telemetry_absent": 0,
+      "detection_rate": 0.9167
+    },
+    "discovery": {
+      "in_scope": 7,
+      "detected": 4,
+      "missed_no_rule_match": 2,
+      "missed_telemetry_absent": 1,
+      "detection_rate": 0.5714
+    },
+    "execution": {
+      "in_scope": 4,
+      "detected": 1,
+      "missed_no_rule_match": 2,
+      "missed_telemetry_absent": 1,
+      "detection_rate": 0.25
+    },
+    "lateral_movement": {
+      "in_scope": 22,
+      "detected": 16,
+      "missed_no_rule_match": 6,
+      "missed_telemetry_absent": 0,
+      "detection_rate": 0.7273
+    },
+    "persistence": {
+      "in_scope": 7,
+      "detected": 7,
+      "missed_no_rule_match": 0,
+      "missed_telemetry_absent": 0,
+      "detection_rate": 1.0
+    },
+    "privilege_escalation": {
+      "in_scope": 2,
+      "detected": 2,
+      "missed_no_rule_match": 0,
+      "missed_telemetry_absent": 0,
+      "detection_rate": 1.0
+    }
+  },
+  "per_technique": [
+    {
+      "technique": "T1003",
+      "name": "OS Credential Dumping",
+      "recordings": 1,
+      "detected": 0,
+      "detection_rate": 0.0
+    },
+    {
+      "technique": "T1003.001",
+      "name": "OS Credential Dumping: LSASS Memory",
+      "recordings": 5,
+      "detected": 5,
+      "detection_rate": 1.0
+    },
+    {
+      "technique": "T1003.002",
+      "name": "OS Credential Dumping: Security Account Manager",
+      "recordings": 4,
+      "detected": 3,
+      "detection_rate": 0.75
+    },
+    {
+      "technique": "T1003.003",
+      "name": "OS Credential Dumping: NTDS",
+      "recordings": 4,
+      "detected": 1,
+      "detection_rate": 0.25
+    },
+    {
+      "technique": "T1003.004",
+      "name": "OS Credential Dumping: LSA Secrets",
+      "recordings": 2,
+      "detected": 1,
+      "detection_rate": 0.5
+    },
+    {
+      "technique": "T1003.006",
+      "name": "OS Credential Dumping: DCSync",
+      "recordings": 2,
+      "detected": 2,
+      "detection_rate": 1.0
+    },
+    {
+      "technique": "T1021",
+      "name": "Remote Services",
+      "recordings": 1,
+      "detected": 1,
+      "detection_rate": 1.0
+    },
+    {
+      "technique": "T1021.002",
+      "name": "Remote Services: SMB/Windows Admin Shares",
+      "recordings": 7,
+      "detected": 7,
+      "detection_rate": 1.0
+    },
+    {
+      "technique": "T1021.003",
+      "name": "Remote Services: Distributed Component Object Model",
+      "recordings": 4,
+      "detected": 2,
+      "detection_rate": 0.5
+    },
+    {
+      "technique": "T1021.006",
+      "name": "Remote Services: Windows Remote Management",
+      "recordings": 3,
+      "detected": 2,
+      "detection_rate": 0.6667
+    },
+    {
+      "technique": "T1037.001",
+      "name": "Logon Script (Windows)",
+      "recordings": 1,
+      "detected": 1,
+      "detection_rate": 1.0
+    },
+    {
+      "technique": "T1047",
+      "name": "Windows Management Instrumentation",
+      "recordings": 6,
+      "detected": 3,
+      "detection_rate": 0.5
+    },
+    {
+      "technique": "T1049",
+      "name": "System Network Connections Discovery",
+      "recordings": 1,
+      "detected": 0,
+      "detection_rate": 0.0
+    },
+    {
+      "technique": "T1053.005",
+      "name": "Scheduled Task/Job: Scheduled Task",
+      "recordings": 4,
+      "detected": 4,
+      "detection_rate": 1.0
+    },
+    {
+      "technique": "T1055",
+      "name": "Process Injection",
+      "recordings": 3,
+      "detected": 1,
+      "detection_rate": 0.3333
+    },
+    {
+      "technique": "T1055.001",
+      "name": "Process Injection: Dynamic-link Library Injection",
+      "recordings": 1,
+      "detected": 1,
+      "detection_rate": 1.0
+    },
+    {
+      "technique": "T1055.002",
+      "name": "Process Injection: Portable Executable Injection",
+      "recordings": 1,
+      "detected": 1,
+      "detection_rate": 1.0
+    },
+    {
+      "technique": "T1055.003",
+      "name": "Process Injection: Thread Execution Hijacking",
+      "recordings": 1,
+      "detected": 1,
+      "detection_rate": 1.0
+    },
+    {
+      "technique": "T1059",
+      "name": "Command and Scripting Interpreter",
+      "recordings": 2,
+      "detected": 0,
+      "detection_rate": 0.0
+    },
+    {
+      "technique": "T1059.001",
+      "name": "Command and Scripting Interpreter: PowerShell",
+      "recordings": 1,
+      "detected": 0,
+      "detection_rate": 0.0
+    },
+    {
+      "technique": "T1059.005",
+      "name": "Command and Scripting Interpreter: Visual Basic",
+      "recordings": 1,
+      "detected": 1,
+      "detection_rate": 1.0
+    },
+    {
+      "technique": "T1069.001",
+      "name": "Permission Groups Discovery: Local Groups",
+      "recordings": 2,
+      "detected": 1,
+      "detection_rate": 0.5
+    },
+    {
+      "technique": "T1069.002",
+      "name": "Permission Groups Discovery: Domain Groups",
+      "recordings": 2,
+      "detected": 1,
+      "detection_rate": 0.5
+    },
+    {
+      "technique": "T1087.001",
+      "name": "Account Discovery: Local Account",
+      "recordings": 1,
+      "detected": 1,
+      "detection_rate": 1.0
+    },
+    {
+      "technique": "T1087.002",
+      "name": "Account Discovery: Domain Account",
+      "recordings": 1,
+      "detected": 1,
+      "detection_rate": 1.0
+    },
+    {
+      "technique": "T1135",
+      "name": "Network Share Discovery",
+      "recordings": 1,
+      "detected": 0,
+      "detection_rate": 0.0
+    },
+    {
+      "technique": "T1197",
+      "name": "BITS Jobs",
+      "recordings": 1,
+      "detected": 1,
+      "detection_rate": 1.0
+    },
+    {
+      "technique": "T1218",
+      "name": "System Binary Proxy Execution",
+      "recordings": 2,
+      "detected": 1,
+      "detection_rate": 0.5
+    },
+    {
+      "technique": "T1218.001",
+      "name": "System Binary Proxy Execution: Compiled HTML File",
+      "recordings": 1,
+      "detected": 1,
+      "detection_rate": 1.0
+    },
+    {
+      "technique": "T1218.002",
+      "name": "System Binary Proxy Execution: Control Panel",
+      "recordings": 1,
+      "detected": 0,
+      "detection_rate": 0.0
+    },
+    {
+      "technique": "T1218.003",
+      "name": "System Binary Proxy Execution: CMSTP",
+      "recordings": 1,
+      "detected": 1,
+      "detection_rate": 1.0
+    },
+    {
+      "technique": "T1218.004",
+      "name": "System Binary Proxy Execution: InstallUtil",
+      "recordings": 1,
+      "detected": 1,
+      "detection_rate": 1.0
+    },
+    {
+      "technique": "T1218.005",
+      "name": "System Binary Proxy Execution: Mshta",
+      "recordings": 3,
+      "detected": 3,
+      "detection_rate": 1.0
+    },
+    {
+      "technique": "T1218.010",
+      "name": "System Binary Proxy Execution: Regsvr32",
+      "recordings": 1,
+      "detected": 1,
+      "detection_rate": 1.0
+    },
+    {
+      "technique": "T1220",
+      "name": "XSL Script Processing",
+      "recordings": 1,
+      "detected": 1,
+      "detection_rate": 1.0
+    },
+    {
+      "technique": "T1505.003",
+      "name": "Server Software Component: Web Shell",
+      "recordings": 1,
+      "detected": 1,
+      "detection_rate": 1.0
+    },
+    {
+      "technique": "T1543.003",
+      "name": "Create or Modify System Process: Windows Service",
+      "recordings": 1,
+      "detected": 1,
+      "detection_rate": 1.0
+    },
+    {
+      "technique": "T1546.003",
+      "name": "Event Triggered Execution: WMI Event Subscription",
+      "recordings": 1,
+      "detected": 1,
+      "detection_rate": 1.0
+    },
+    {
+      "technique": "T1547.001",
+      "name": "Registry Run Keys / Startup Folder",
+      "recordings": 2,
+      "detected": 2,
+      "detection_rate": 1.0
+    },
+    {
+      "technique": "T1548.002",
+      "name": "Abuse Elevation Control Mechanism: Bypass User Account Control",
+      "recordings": 1,
+      "detected": 1,
+      "detection_rate": 1.0
+    },
+    {
+      "technique": "T1558.003",
+      "name": "Steal or Forge Kerberos Tickets: Kerberoasting",
+      "recordings": 1,
+      "detected": 0,
+      "detection_rate": 0.0
+    },
+    {
+      "technique": "T1562.002",
+      "name": "Impair Defenses: Disable Windows Event Logging",
+      "recordings": 17,
+      "detected": 17,
+      "detection_rate": 1.0
+    },
+    {
+      "technique": "T1562.004",
+      "name": "Impair Defenses: Disable or Modify System Firewall",
+      "recordings": 1,
+      "detected": 1,
+      "detection_rate": 1.0
+    }
+  ],
+  "uncovered_techniques": [
+    {
+      "technique": "T1012",
+      "name": "Query Registry",
+      "recordings": 1
+    },
+    {
+      "technique": "T1056.002",
+      "name": "Input Capture: GUI Input Capture",
+      "recordings": 1
+    },
+    {
+      "technique": "T1110.003",
+      "name": "Brute Force: Password Spraying",
+      "recordings": 1
+    },
+    {
+      "technique": "T1112",
+      "name": "Modify Registry",
+      "recordings": 1
+    },
+    {
+      "technique": "T1123",
+      "name": "Audio Capture",
+      "recordings": 1
+    },
+    {
+      "technique": "T1210",
+      "name": "Exploitation of Remote Services",
+      "recordings": 1
+    },
+    {
+      "technique": "T1222.001",
+      "name": "Windows File and Directory Permissions Modification",
+      "recordings": 1
+    },
+    {
+      "technique": "T1518",
+      "name": "Software Discovery",
+      "recordings": 1
+    },
+    {
+      "technique": "T1550.002",
+      "name": "Use Alternate Authentication Material: Pass the Hash",
+      "recordings": 1
+    },
+    {
+      "technique": "T1574.001",
+      "name": "Hijack Execution Flow: DLL Search Order Hijacking",
+      "recordings": 1
+    }
+  ],
+  "per_rule": {
+    "dcsync_replication": {
+      "title": "Active Directory Replication From Non-DC (DCSync)",
+      "level": "high",
+      "techniques": [
+        "T1003.006"
+      ],
+      "alerts": 9,
+      "recordings_fired": 5,
+      "labelled_recordings": 2,
+      "labelled_recordings_fired": 2,
+      "off_target_attack_alerts": 0,
+      "false_positive_alerts": 3,
+      "false_positive_recordings": 3,
+      "unreviewed_alerts": 0
+    },
+    "lsass_dump_via_comsvcs": {
+      "title": "LSASS Memory Dump via comsvcs.dll MiniDump",
+      "level": "high",
+      "techniques": [
+        "T1003.001"
+      ],
+      "alerts": 2,
+      "recordings_fired": 1,
+      "labelled_recordings": 5,
+      "labelled_recordings_fired": 1,
+      "off_target_attack_alerts": 0,
+      "false_positive_alerts": 0,
+      "false_positive_recordings": 0,
+      "unreviewed_alerts": 0
+    },
+    "lsass_memory_access": {
+      "title": "LSASS Process Memory Accessed With Dump-Capable Rights",
+      "level": "high",
+      "techniques": [
+        "T1003.001"
+      ],
+      "alerts": 34,
+      "recordings_fired": 15,
+      "labelled_recordings": 5,
+      "labelled_recordings_fired": 5,
+      "off_target_attack_alerts": 11,
+      "false_positive_alerts": 13,
+      "false_positive_recordings": 7,
+      "unreviewed_alerts": 0
+    },
+    "ntds_database_extraction": {
+      "title": "Active Directory NTDS.dit Database Extraction",
+      "level": "critical",
+      "techniques": [
+        "T1003.003"
+      ],
+      "alerts": 4,
+      "recordings_fired": 2,
+      "labelled_recordings": 4,
+      "labelled_recordings_fired": 1,
+      "off_target_attack_alerts": 2,
+      "false_positive_alerts": 0,
+      "false_positive_recordings": 0,
+      "unreviewed_alerts": 0
+    },
+    "registry_hive_dump": {
+      "title": "SAM/SECURITY/SYSTEM Registry Hive Dump",
+      "level": "high",
+      "techniques": [
+        "T1003.002",
+        "T1003.004"
+      ],
+      "alerts": 17,
+      "recordings_fired": 9,
+      "labelled_recordings": 6,
+      "labelled_recordings_fired": 3,
+      "off_target_attack_alerts": 8,
+      "false_positive_alerts": 3,
+      "false_positive_recordings": 1,
+      "unreviewed_alerts": 0
+    },
+    "rubeus_kerberos_theft": {
+      "title": "Kerberos Ticket Theft Tooling in PowerShell",
+      "level": "high",
+      "techniques": [
+        "T1558.003"
+      ],
+      "alerts": 0,
+      "recordings_fired": 0,
+      "labelled_recordings": 1,
+      "labelled_recordings_fired": 0,
+      "off_target_attack_alerts": 0,
+      "false_positive_alerts": 0,
+      "false_positive_recordings": 0,
+      "unreviewed_alerts": 0
+    },
+    "audit_policy_disabled": {
+      "title": "Audit Policy Disabled via auditpol",
+      "level": "high",
+      "techniques": [
+        "T1562.002"
+      ],
+      "alerts": 12,
+      "recordings_fired": 1,
+      "labelled_recordings": 17,
+      "labelled_recordings_fired": 1,
+      "off_target_attack_alerts": 0,
+      "false_positive_alerts": 0,
+      "false_positive_recordings": 0,
+      "unreviewed_alerts": 0
+    },
+    "bitsadmin_transfer_job": {
+      "title": "File Download via BITS Job",
+      "level": "medium",
+      "techniques": [
+        "T1197"
+      ],
+      "alerts": 2,
+      "recordings_fired": 1,
+      "labelled_recordings": 1,
+      "labelled_recordings_fired": 1,
+      "off_target_attack_alerts": 0,
+      "false_positive_alerts": 0,
+      "false_positive_recordings": 0,
+      "unreviewed_alerts": 0
+    },
+    "cmstp_proxy_execution": {
+      "title": "CMSTP Silent INF Proxy Execution",
+      "level": "medium",
+      "techniques": [
+        "T1218.003"
+      ],
+      "alerts": 2,
+      "recordings_fired": 1,
+      "labelled_recordings": 1,
+      "labelled_recordings_fired": 1,
+      "off_target_attack_alerts": 0,
+      "false_positive_alerts": 0,
+      "false_positive_recordings": 0,
+      "unreviewed_alerts": 0
+    },
+    "compiled_html_help_execution": {
+      "title": "Compiled HTML Help Executing a CHM Payload",
+      "level": "medium",
+      "techniques": [
+        "T1218.001"
+      ],
+      "alerts": 2,
+      "recordings_fired": 1,
+      "labelled_recordings": 1,
+      "labelled_recordings_fired": 1,
+      "off_target_attack_alerts": 0,
+      "false_positive_alerts": 0,
+      "false_positive_recordings": 0,
+      "unreviewed_alerts": 0
+    },
+    "create_remote_thread_injection": {
+      "title": "Remote Thread Created in Another Process",
+      "level": "high",
+      "techniques": [
+        "T1055"
+      ],
+      "alerts": 94,
+      "recordings_fired": 7,
+      "labelled_recordings": 6,
+      "labelled_recordings_fired": 4,
+      "off_target_attack_alerts": 3,
+      "false_positive_alerts": 0,
+      "false_positive_recordings": 0,
+      "unreviewed_alerts": 0
+    },
+    "disable_cmdline_audit_logging": {
+      "title": "Process Command-Line Audit Logging Disabled",
+      "level": "medium",
+      "techniques": [
+        "T1562.002"
+      ],
+      "alerts": 2,
+      "recordings_fired": 2,
+      "labelled_recordings": 17,
+      "labelled_recordings_fired": 2,
+      "off_target_attack_alerts": 0,
+      "false_positive_alerts": 0,
+      "false_positive_recordings": 0,
+      "unreviewed_alerts": 0
+    },
+    "disable_eventlog_via_service_registry": {
+      "title": "Event Log Service Disabled via Start-Type Registry",
+      "level": "high",
+      "techniques": [
+        "T1562.002"
+      ],
+      "alerts": 3,
+      "recordings_fired": 3,
+      "labelled_recordings": 17,
+      "labelled_recordings_fired": 3,
+      "off_target_attack_alerts": 0,
+      "false_positive_alerts": 0,
+      "false_positive_recordings": 0,
+      "unreviewed_alerts": 0
+    },
+    "eventlog_cleared_or_relocated": {
+      "title": "Security Event Log Cleared or Relocated via wevtutil",
+      "level": "high",
+      "techniques": [
+        "T1070.001",
+        "T1562.002"
+      ],
+      "alerts": 1,
+      "recordings_fired": 1,
+      "labelled_recordings": 17,
+      "labelled_recordings_fired": 1,
+      "off_target_attack_alerts": 0,
+      "false_positive_alerts": 0,
+      "false_positive_recordings": 0,
+      "unreviewed_alerts": 0
+    },
+    "eventlog_service_disabled_powershell": {
+      "title": "Logging Service Disabled via PowerShell Service Cmdlet",
+      "level": "high",
+      "techniques": [
+        "T1562.002"
+      ],
+      "alerts": 5,
+      "recordings_fired": 5,
+      "labelled_recordings": 17,
+      "labelled_recordings_fired": 5,
+      "off_target_attack_alerts": 0,
+      "false_positive_alerts": 0,
+      "false_positive_recordings": 0,
+      "unreviewed_alerts": 0
+    },
+    "installutil_proxy_execution": {
+      "title": "InstallUtil Uninstall Proxy Execution",
+      "level": "medium",
+      "techniques": [
+        "T1218.004"
+      ],
+      "alerts": 2,
+      "recordings_fired": 1,
+      "labelled_recordings": 1,
+      "labelled_recordings_fired": 1,
+      "off_target_attack_alerts": 0,
+      "false_positive_alerts": 0,
+      "false_positive_recordings": 0,
+      "unreviewed_alerts": 0
+    },
+    "mavinject_dll_injection": {
+      "title": "Mavinject Running-Process DLL Injection",
+      "level": "high",
+      "techniques": [
+        "T1055"
+      ],
+      "alerts": 2,
+      "recordings_fired": 1,
+      "labelled_recordings": 6,
+      "labelled_recordings_fired": 1,
+      "off_target_attack_alerts": 0,
+      "false_positive_alerts": 0,
+      "false_positive_recordings": 0,
+      "unreviewed_alerts": 0
+    },
+    "mshta_suspicious_execution": {
+      "title": "Mshta Executing Script or Remote Content",
+      "level": "high",
+      "techniques": [
+        "T1218.005"
+      ],
+      "alerts": 6,
+      "recordings_fired": 3,
+      "labelled_recordings": 3,
+      "labelled_recordings_fired": 3,
+      "off_target_attack_alerts": 0,
+      "false_positive_alerts": 0,
+      "false_positive_recordings": 0,
+      "unreviewed_alerts": 0
+    },
+    "netsh_firewall_rule_added": {
+      "title": "Windows Firewall Rule Added via Netsh",
+      "level": "medium",
+      "techniques": [
+        "T1562.004"
+      ],
+      "alerts": 6,
+      "recordings_fired": 2,
+      "labelled_recordings": 1,
+      "labelled_recordings_fired": 1,
+      "off_target_attack_alerts": 4,
+      "false_positive_alerts": 0,
+      "false_positive_recordings": 0,
+      "unreviewed_alerts": 0
+    },
+    "register_cimprovider_execution": {
+      "title": "DLL Executed via Register-CimProvider",
+      "level": "high",
+      "techniques": [
+        "T1218"
+      ],
+      "alerts": 2,
+      "recordings_fired": 1,
+      "labelled_recordings": 10,
+      "labelled_recordings_fired": 1,
+      "off_target_attack_alerts": 0,
+      "false_positive_alerts": 0,
+      "false_positive_recordings": 0,
+      "unreviewed_alerts": 0
+    },
+    "regsvr32_scriptlet_execution": {
+      "title": "Regsvr32 Scriptlet or Remote COM Registration",
+      "level": "high",
+      "techniques": [
+        "T1218.010"
+      ],
+      "alerts": 2,
+      "recordings_fired": 1,
+      "labelled_recordings": 1,
+      "labelled_recordings_fired": 1,
+      "off_target_attack_alerts": 0,
+      "false_positive_alerts": 0,
+      "false_positive_recordings": 0,
+      "unreviewed_alerts": 0
+    },
+    "stop_eventlog_minint_key": {
+      "title": "Event Logging Disabled via MiniNt Registry Key",
+      "level": "high",
+      "techniques": [
+        "T1562.002"
+      ],
+      "alerts": 8,
+      "recordings_fired": 6,
+      "labelled_recordings": 17,
+      "labelled_recordings_fired": 6,
+      "off_target_attack_alerts": 0,
+      "false_positive_alerts": 0,
+      "false_positive_recordings": 0,
+      "unreviewed_alerts": 0
+    },
+    "wmic_xsl_script_execution": {
+      "title": "WMIC Executing a Remote or Local XSL Script",
+      "level": "medium",
+      "techniques": [
+        "T1220"
+      ],
+      "alerts": 2,
+      "recordings_fired": 1,
+      "labelled_recordings": 1,
+      "labelled_recordings_fired": 1,
+      "off_target_attack_alerts": 0,
+      "false_positive_alerts": 0,
+      "false_positive_recordings": 0,
+      "unreviewed_alerts": 0
+    },
+    "account_discovery_net": {
+      "title": "Account Discovery via net user",
+      "level": "low",
+      "techniques": [
+        "T1087.001",
+        "T1087.002"
+      ],
+      "alerts": 12,
+      "recordings_fired": 3,
+      "labelled_recordings": 2,
+      "labelled_recordings_fired": 2,
+      "off_target_attack_alerts": 4,
+      "false_positive_alerts": 0,
+      "false_positive_recordings": 0,
+      "unreviewed_alerts": 0
+    },
+    "local_group_discovery": {
+      "title": "Local or Domain Group Membership Discovery via net",
+      "level": "low",
+      "techniques": [
+        "T1069.001",
+        "T1069.002"
+      ],
+      "alerts": 8,
+      "recordings_fired": 2,
+      "labelled_recordings": 4,
+      "labelled_recordings_fired": 2,
+      "off_target_attack_alerts": 0,
+      "false_positive_alerts": 0,
+      "false_positive_recordings": 0,
+      "unreviewed_alerts": 0
+    },
+    "network_share_session_discovery": {
+      "title": "Network Share and Session Discovery via net",
+      "level": "low",
+      "techniques": [
+        "T1049",
+        "T1135"
+      ],
+      "alerts": 0,
+      "recordings_fired": 0,
+      "labelled_recordings": 2,
+      "labelled_recordings_fired": 0,
+      "off_target_attack_alerts": 0,
+      "false_positive_alerts": 0,
+      "false_positive_recordings": 0,
+      "unreviewed_alerts": 0
+    },
+    "powershell_download_cradle": {
+      "title": "PowerShell Download Cradle in Script Block",
+      "level": "high",
+      "techniques": [
+        "T1059.001"
+      ],
+      "alerts": 15,
+      "recordings_fired": 14,
+      "labelled_recordings": 1,
+      "labelled_recordings_fired": 0,
+      "off_target_attack_alerts": 14,
+      "false_positive_alerts": 0,
+      "false_positive_recordings": 0,
+      "unreviewed_alerts": 0
+    },
+    "wmi_remote_process_creation": {
+      "title": "Process Launched by WMI Provider Host",
+      "level": "high",
+      "techniques": [
+        "T1047"
+      ],
+      "alerts": 10,
+      "recordings_fired": 5,
+      "labelled_recordings": 6,
+      "labelled_recordings_fired": 3,
+      "off_target_attack_alerts": 4,
+      "false_positive_alerts": 0,
+      "false_positive_recordings": 0,
+      "unreviewed_alerts": 0
+    },
+    "wscript_cscript_execution": {
+      "title": "Script Host Executing a Script File",
+      "level": "medium",
+      "techniques": [
+        "T1059.005"
+      ],
+      "alerts": 12,
+      "recordings_fired": 5,
+      "labelled_recordings": 1,
+      "labelled_recordings_fired": 1,
+      "off_target_attack_alerts": 0,
+      "false_positive_alerts": 10,
+      "false_positive_recordings": 4,
+      "unreviewed_alerts": 0
+    },
+    "admin_share_access": {
+      "title": "Access to a Hidden Administrative Share",
+      "level": "low",
+      "techniques": [
+        "T1021.002"
+      ],
+      "alerts": 86,
+      "recordings_fired": 25,
+      "labelled_recordings": 7,
+      "labelled_recordings_fired": 7,
+      "off_target_attack_alerts": 17,
+      "false_positive_alerts": 45,
+      "false_positive_recordings": 12,
+      "unreviewed_alerts": 0
+    },
+    "dcom_lateral_execution": {
+      "title": "Command Shell Spawned by a DCOM Server",
+      "level": "medium",
+      "techniques": [
+        "T1021.003"
+      ],
+      "alerts": 9,
+      "recordings_fired": 5,
+      "labelled_recordings": 4,
+      "labelled_recordings_fired": 1,
+      "off_target_attack_alerts": 1,
+      "false_positive_alerts": 6,
+      "false_positive_recordings": 3,
+      "unreviewed_alerts": 0
+    },
+    "remote_service_exec_scm": {
+      "title": "Service Installed to Run a Command Interpreter",
+      "level": "high",
+      "techniques": [
+        "T1021.002"
+      ],
+      "alerts": 2,
+      "recordings_fired": 2,
+      "labelled_recordings": 7,
+      "labelled_recordings_fired": 1,
+      "off_target_attack_alerts": 0,
+      "false_positive_alerts": 0,
+      "false_positive_recordings": 0,
+      "unreviewed_alerts": 0
+    },
+    "winrm_remote_execution": {
+      "title": "Process Launched by WinRM Host Process",
+      "level": "medium",
+      "techniques": [
+        "T1021.006"
+      ],
+      "alerts": 10,
+      "recordings_fired": 3,
+      "labelled_recordings": 3,
+      "labelled_recordings_fired": 2,
+      "off_target_attack_alerts": 2,
+      "false_positive_alerts": 0,
+      "false_positive_recordings": 0,
+      "unreviewed_alerts": 0
+    },
+    "logon_script_userinit": {
+      "title": "Logon Script Registered via UserInitMprLogonScript",
+      "level": "high",
+      "techniques": [
+        "T1037.001"
+      ],
+      "alerts": 1,
+      "recordings_fired": 1,
+      "labelled_recordings": 1,
+      "labelled_recordings_fired": 1,
+      "off_target_attack_alerts": 0,
+      "false_positive_alerts": 0,
+      "false_positive_recordings": 0,
+      "unreviewed_alerts": 0
+    },
+    "run_key_modification": {
+      "title": "Autorun Registry Run Key Set",
+      "level": "medium",
+      "techniques": [
+        "T1547.001"
+      ],
+      "alerts": 6,
+      "recordings_fired": 5,
+      "labelled_recordings": 2,
+      "labelled_recordings_fired": 2,
+      "off_target_attack_alerts": 0,
+      "false_positive_alerts": 3,
+      "false_positive_recordings": 3,
+      "unreviewed_alerts": 0
+    },
+    "scheduled_task_creation": {
+      "title": "Scheduled Task Created or Updated",
+      "level": "medium",
+      "techniques": [
+        "T1053.005"
+      ],
+      "alerts": 86,
+      "recordings_fired": 35,
+      "labelled_recordings": 4,
+      "labelled_recordings_fired": 4,
+      "off_target_attack_alerts": 0,
+      "false_positive_alerts": 70,
+      "false_positive_recordings": 31,
+      "unreviewed_alerts": 0
+    },
+    "scheduled_task_schtasks_create": {
+      "title": "Scheduled Task Created via schtasks",
+      "level": "medium",
+      "techniques": [
+        "T1053.005"
+      ],
+      "alerts": 6,
+      "recordings_fired": 3,
+      "labelled_recordings": 4,
+      "labelled_recordings_fired": 3,
+      "off_target_attack_alerts": 0,
+      "false_positive_alerts": 0,
+      "false_positive_recordings": 0,
+      "unreviewed_alerts": 0
+    },
+    "webshell_server_process_spawn": {
+      "title": "Web Server Process Spawning a Command Shell",
+      "level": "high",
+      "techniques": [
+        "T1505.003"
+      ],
+      "alerts": 4,
+      "recordings_fired": 1,
+      "labelled_recordings": 1,
+      "labelled_recordings_fired": 1,
+      "off_target_attack_alerts": 0,
+      "false_positive_alerts": 0,
+      "false_positive_recordings": 0,
+      "unreviewed_alerts": 0
+    },
+    "wmi_event_subscription": {
+      "title": "WMI Permanent Event Subscription Created",
+      "level": "high",
+      "techniques": [
+        "T1546.003"
+      ],
+      "alerts": 5,
+      "recordings_fired": 2,
+      "labelled_recordings": 1,
+      "labelled_recordings_fired": 1,
+      "off_target_attack_alerts": 2,
+      "false_positive_alerts": 0,
+      "false_positive_recordings": 0,
+      "unreviewed_alerts": 0
+    },
+    "service_binary_path_modification": {
+      "title": "Existing Service Binary Path Modified via sc",
+      "level": "high",
+      "techniques": [
+        "T1543.003"
+      ],
+      "alerts": 4,
+      "recordings_fired": 1,
+      "labelled_recordings": 1,
+      "labelled_recordings_fired": 1,
+      "off_target_attack_alerts": 0,
+      "false_positive_alerts": 0,
+      "false_positive_recordings": 0,
+      "unreviewed_alerts": 0
+    },
+    "uac_bypass_fodhelper": {
+      "title": "UAC Bypass via ms-settings Shell Open Command",
+      "level": "high",
+      "techniques": [
+        "T1548.002"
+      ],
+      "alerts": 4,
+      "recordings_fired": 1,
+      "labelled_recordings": 1,
+      "labelled_recordings_fired": 1,
+      "off_target_attack_alerts": 0,
+      "false_positive_alerts": 0,
+      "false_positive_recordings": 0,
+      "unreviewed_alerts": 0
+    }
+  },
+  "conversion": {
+    "splunk": {
+      "converted": 41,
+      "total": 41,
+      "unsupported": {}
+    },
+    "lucene": {
+      "converted": 41,
+      "total": 41,
+      "unsupported": {}
+    },
+    "esql": {
+      "converted": 41,
+      "total": 41,
+      "unsupported": {}
+    },
+    "kql": {
+      "converted": 33,
+      "total": 41,
+      "unsupported": {
+        "lsass_memory_access": "microsoft_xdr: Unable to determine table name from rule.  The query table is determined in the following order of priority:; azure_monitor: Unable to determine table name from rule.  The query table is determined in the following order of priority:",
+        "rubeus_kerberos_theft": "microsoft_xdr: Unable to determine table name from rule.  The query table is determined in the following order of priority:; azure_monitor: Unable to determine table name from rule.  The query table is determined in the following order of priority:",
+        "create_remote_thread_injection": "microsoft_xdr: Unable to determine table name from rule.  The query table is determined in the following order of priority:; azure_monitor: Unable to determine table name from rule.  The query table is determined in the following order of priority:",
+        "eventlog_service_disabled_powershell": "microsoft_xdr: Unable to determine table name from rule.  The query table is determined in the following order of priority:; azure_monitor: Unable to determine table name from rule.  The query table is determined in the following order of priority:",
+        "powershell_download_cradle": "microsoft_xdr: Unable to determine table name from rule.  The query table is determined in the following order of priority:; azure_monitor: Unable to determine table name from rule.  The query table is determined in the following order of priority:",
+        "remote_service_exec_scm": "microsoft_xdr: Unable to determine table name from rule.  The query table is determined in the following order of priority:; azure_monitor: Unable to determine table name from rule.  The query table is determined in the following order of priority:",
+        "scheduled_task_creation": "microsoft_xdr: Unable to determine table name from rule.  The query table is determined in the following order of priority:; azure_monitor: Unable to determine table name from rule.  The query table is determined in the following order of priority:",
+        "wmi_event_subscription": "microsoft_xdr: Unable to determine table name from rule.  The query table is determined in the following order of priority:; azure_monitor: Unable to determine table name from rule.  The query table is determined in the following order of priority:"
+      }
+    }
+  }
+}

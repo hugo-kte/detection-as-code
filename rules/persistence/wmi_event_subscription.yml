@@ -1,0 +1,24 @@
+title: WMI Permanent Event Subscription Created
+id: c0f1857e-268d-4a19-957b-47a880604e67
+status: experimental
+description: |
+    Detects creation of a WMI event filter, consumer or binding, the building blocks of a permanent
+    WMI event subscription. Such subscriptions run code on a trigger (boot, logon, a timer) and are a
+    stealthy, fileless persistence mechanism.
+references:
+    - https://attack.mitre.org/techniques/T1546/003/
+author: Hugo
+date: 2026-10-13
+tags:
+    - attack.t1546.003
+    - attack.persistence
+logsource:
+    category: wmi_event
+    product: windows
+detection:
+    selection:
+        Operation|contains: 'Created'
+    condition: selection
+falsepositives:
+    - Monitoring and management products register WMI consumers; baseline the expected consumer names.
+level: high

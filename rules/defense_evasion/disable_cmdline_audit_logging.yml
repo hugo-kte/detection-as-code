@@ -1,0 +1,25 @@
+title: Process Command-Line Audit Logging Disabled
+id: 31bf03d2-29d4-4160-8bf2-736d2fac1034
+status: experimental
+description: |
+    Detects the ProcessCreationIncludeCmdLine_Enabled policy value being cleared, which removes command
+    lines from Security event 4688. Attackers disable this to hide the arguments of the programs they
+    run while leaving process creation itself only partially visible.
+references:
+    - https://attack.mitre.org/techniques/T1562/002/
+author: Hugo
+date: 2026-10-13
+tags:
+    - attack.t1562.002
+    - attack.defense-evasion
+logsource:
+    category: registry_set
+    product: windows
+detection:
+    selection:
+        TargetObject|endswith: '\Audit\ProcessCreationIncludeCmdLine_Enabled'
+        Details: 'DWORD (0x00000000)'
+    condition: selection
+falsepositives:
+    - Group-policy changes that intentionally adjust command-line auditing.
+level: medium

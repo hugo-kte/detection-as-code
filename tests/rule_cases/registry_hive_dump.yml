@@ -1,0 +1,40 @@
+rule: registry_hive_dump
+defaults:
+  Channel: Microsoft-Windows-Sysmon/Operational
+  EventID: 1
+cases:
+- name: save of a secret hive
+  match: true
+  event:
+    Image: C:\Windows\System32\reg.exe
+    CommandLine: x save HKLM\SAM x
+- name: subkey of SECURITY counts
+  match: true
+  event:
+    Image: C:\Windows\System32\reg.exe
+    CommandLine: x save HKLM\SECURITY\Example x
+- name: whole SYSTEM hive
+  match: true
+  event:
+    Image: C:\Windows\System32\reg.exe
+    CommandLine: x save "HKLM\SYSTEM" x
+- name: 'regression: no save/export verb (duplicate-key bug)'
+  match: false
+  event:
+    Image: C:\Windows\System32\reg.exe
+    CommandLine: x add HKLM\SYSTEM\CurrentControlSet\Control\Example x
+- name: export of a SYSTEM subkey is configuration
+  match: false
+  event:
+    Image: C:\Windows\System32\reg.exe
+    CommandLine: x export HKLM\SYSTEM\CurrentControlSet\Services\Example x
+- name: copy utility with both tokens
+  match: true
+  event:
+    Image: C:\Windows\System32\esentutl.exe
+    CommandLine: x /y x/config/SAM x
+- name: other binary
+  match: false
+  event:
+    Image: C:\Windows\System32\notepad.exe
+    CommandLine: x save HKLM\SAM x

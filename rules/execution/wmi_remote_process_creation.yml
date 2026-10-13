@@ -1,0 +1,42 @@
+title: Process Launched by WMI Provider Host
+id: 1b1daf7b-37cd-41b7-9ea3-698801f7e324
+status: experimental
+description: |
+    Detects a command interpreter or script host launched as a child of WmiPrvSE.exe. Remote process
+    creation over WMI (for example Win32_Process Create) runs the new process under the WMI provider
+    host, so this parent/child relationship is the generic footprint of WMI-based remote process execution.
+references:
+    - https://attack.mitre.org/techniques/T1047/
+author: Hugo
+date: 2026-10-13
+tags:
+    - attack.t1047
+    - attack.execution
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection:
+        ParentImage|endswith: '\WmiPrvSE.exe'
+        Image|endswith:
+            - '\cmd.exe'
+            - '\powershell.exe'
+            - '\pwsh.exe'
+            - '\mshta.exe'
+            - '\wscript.exe'
+            - '\cscript.exe'
+            - '\rundll32.exe'
+            - '\regsvr32.exe'
+            - '\net.exe'
+            - '\net1.exe'
+            - '\whoami.exe'
+            - '\nltest.exe'
+            - '\reg.exe'
+            - '\sc.exe'
+            - '\schtasks.exe'
+            - '\wmic.exe'
+            - '\bitsadmin.exe'
+    condition: selection
+falsepositives:
+    - Management tooling occasionally runs commands via WMI; baseline the specific commands.
+level: high

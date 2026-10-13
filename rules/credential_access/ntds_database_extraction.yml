@@ -1,0 +1,40 @@
+title: Active Directory NTDS.dit Database Extraction
+id: 36d599f9-5718-4ac2-a2e8-1f5498a0da37
+status: experimental
+description: |
+    Detects extraction of the Active Directory database (NTDS.dit), which contains the hashes of every
+    domain account. It covers the generic routes: creating an Install-From-Media copy with ntdsutil,
+    staging a volume shadow copy with vssadmin or wmic, and reading the database file directly by
+    name. A single hit warrants immediate investigation on a domain controller.
+references:
+    - https://attack.mitre.org/techniques/T1003/003/
+author: Hugo
+date: 2026-10-13
+tags:
+    - attack.t1003.003
+    - attack.credential-access
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    ntdsutil_ifm:
+        Image|endswith: '\ntdsutil.exe'
+        CommandLine|contains:
+            - 'ac i ntds'
+            - 'create full'
+            - 'ifm'
+    shadow_copy:
+        CommandLine|contains|all:
+            - 'shadow'
+            - 'create'
+        CommandLine|contains:
+            - 'vssadmin'
+            - 'shadowcopy'
+            - 'win32_shadowcopy'
+    ntds_file:
+        CommandLine|contains: 'ntds.dit'
+    condition: ntdsutil_ifm or shadow_copy or ntds_file
+falsepositives:
+    - Backup products and sanctioned domain-controller maintenance may touch NTDS.dit; scope to
+      domain controllers and verify the operator.
+level: critical

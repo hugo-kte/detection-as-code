@@ -1,0 +1,17 @@
+rule: stop_eventlog_minint_key
+defaults:
+  Channel: Microsoft-Windows-Sysmon/Operational
+  EventID: 12
+cases:
+- name: key created
+  match: true
+  event:
+    TargetObject: HKLM\System\CurrentControlSet\Control\MiniNt
+- name: raw registry path form
+  match: true
+  event:
+    TargetObject: \REGISTRY\MACHINE\SYSTEM\ControlSet001\Control\MiniNt
+- name: other control key
+  match: false
+  event:
+    TargetObject: HKLM\System\CurrentControlSet\Control\Example

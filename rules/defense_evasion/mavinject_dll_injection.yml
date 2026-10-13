@@ -1,0 +1,25 @@
+title: Mavinject Running-Process DLL Injection
+id: af89133f-e89d-4bd4-8cc5-a921b5c39f1c
+status: experimental
+description: |
+    Detects the signed utility mavinject.exe being used with INJECTRUNNING to load a DLL into an
+    already-running process. This turns a trusted binary into a generic DLL-injection primitive used
+    for code execution and defense evasion.
+references:
+    - https://attack.mitre.org/techniques/T1055/
+author: Hugo
+date: 2026-10-13
+tags:
+    - attack.t1055
+    - attack.defense-evasion
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection:
+        Image|endswith: '\mavinject.exe'
+        CommandLine|contains: 'INJECTRUNNING'
+    condition: selection
+falsepositives:
+    - App-V virtual environments use mavinject legitimately; baseline App-V hosts.
+level: high

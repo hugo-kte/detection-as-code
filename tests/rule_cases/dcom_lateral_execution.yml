@@ -1,0 +1,23 @@
+rule: dcom_lateral_execution
+defaults:
+  Channel: Microsoft-Windows-Sysmon/Operational
+  EventID: 1
+cases:
+- name: shell with arguments under a DCOM server
+  match: true
+  event:
+    ParentImage: C:\Windows\System32\mmc.exe
+    Image: C:\Windows\System32\cmd.exe
+    CommandLine: cmd.exe /c x
+- name: interactive shell from the desktop is filtered
+  match: false
+  event:
+    ParentImage: C:\Windows\explorer.exe
+    Image: C:\Windows\System32\cmd.exe
+    CommandLine: '"C:\Windows\system32\cmd.exe"'
+- name: unrelated parent
+  match: false
+  event:
+    ParentImage: C:\Temp\example.exe
+    Image: C:\Windows\System32\cmd.exe
+    CommandLine: cmd.exe /c x

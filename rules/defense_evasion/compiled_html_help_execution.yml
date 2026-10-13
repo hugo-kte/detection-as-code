@@ -1,0 +1,25 @@
+title: Compiled HTML Help Executing a CHM Payload
+id: 6f1b4d58-c27e-4a0b-d346-7e5a0b3c8d66
+status: experimental
+description: |
+    Detects the HTML Help viewer hh.exe opening a compiled help (.chm) file, which can embed and run
+    script, making it a proxy-execution vector delivered as a help file. The rule keys on hh.exe with a
+    .chm argument, independent of the payload.
+references:
+    - https://attack.mitre.org/techniques/T1218/001/
+author: Hugo
+date: 2026-10-13
+tags:
+    - attack.t1218.001
+    - attack.defense-evasion
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection:
+        Image|endswith: '\hh.exe'
+        CommandLine|contains: '.chm'
+    condition: selection
+falsepositives:
+    - Legitimate product documentation shipped as CHM files; baseline known help files.
+level: medium

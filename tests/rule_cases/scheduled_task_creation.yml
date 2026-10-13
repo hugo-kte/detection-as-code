@@ -1,0 +1,26 @@
+rule: scheduled_task_creation
+defaults:
+  Channel: Security
+  EventID: 4698
+cases:
+- name: task registered by a user
+  match: true
+  event:
+    TaskName: \Example
+    SubjectUserName: example-user
+- name: built-in task maintained by the computer account
+  match: false
+  event:
+    EventID: 4702
+    TaskName: \Microsoft\Windows\Example\Task
+    SubjectUserName: EXAMPLE-PC$
+- name: built-in path used by a user still alerts
+  match: true
+  event:
+    TaskName: \Microsoft\Windows\Example\Task
+    SubjectUserName: example-user
+- name: other security event
+  match: false
+  event:
+    EventID: 4624
+    TaskName: \Example

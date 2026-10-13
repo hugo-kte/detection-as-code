@@ -1,0 +1,28 @@
+title: Account Discovery via net user
+id: 2efc5b18-b988-464c-9f65-975a4a6c8727
+status: experimental
+description: |
+    Detects local and domain account enumeration with net user. Listing accounts is a common
+    discovery step used to find targets for credential access and lateral movement.
+references:
+    - https://attack.mitre.org/techniques/T1087/001/
+    - https://attack.mitre.org/techniques/T1087/002/
+author: Hugo
+date: 2026-10-13
+tags:
+    - attack.t1087.001
+    - attack.t1087.002
+    - attack.discovery
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection:
+        Image|endswith:
+            - '\net.exe'
+            - '\net1.exe'
+        CommandLine|contains: 'user'
+    condition: selection
+falsepositives:
+    - Help-desk and provisioning scripts run net user; separate by volume and account.
+level: low

@@ -1,0 +1,20 @@
+rule: disable_eventlog_via_service_registry
+defaults:
+  Channel: Microsoft-Windows-Sysmon/Operational
+  EventID: 13
+cases:
+- name: start type set to disabled
+  match: true
+  event:
+    TargetObject: HKLM\System\CurrentControlSet\Services\EventLog\Start
+    Details: DWORD (0x00000004)
+- name: start type set to automatic
+  match: false
+  event:
+    TargetObject: HKLM\System\CurrentControlSet\Services\EventLog\Start
+    Details: DWORD (0x00000002)
+- name: other service
+  match: false
+  event:
+    TargetObject: HKLM\System\CurrentControlSet\Services\Example\Start
+    Details: DWORD (0x00000004)

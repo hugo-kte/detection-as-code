@@ -1,0 +1,24 @@
+title: Event Logging Disabled via MiniNt Registry Key
+id: 2ff97bec-a12c-4ad0-bfee-e3d85ac32d0d
+status: experimental
+description: |
+    Detects creation of the HKLM\SYSTEM\...\Control\MiniNt key. Windows treats the presence of this
+    key as a sign it is running in a pre-installation (WinPE) environment and silently stops writing to
+    the event log, giving an attacker a reboot-persistent way to blind logging.
+references:
+    - https://attack.mitre.org/techniques/T1562/002/
+author: Hugo
+date: 2026-10-13
+tags:
+    - attack.t1562.002
+    - attack.defense-evasion
+logsource:
+    category: registry_event
+    product: windows
+detection:
+    selection:
+        TargetObject|contains: '\Control\MiniNt'
+    condition: selection
+falsepositives:
+    - Legitimate creation of this key is not expected on a running production system.
+level: high

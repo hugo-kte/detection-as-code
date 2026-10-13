@@ -1,0 +1,31 @@
+title: Network Share and Session Discovery via net
+id: 2c8451bf-49f3-4ab0-af5c-2dcd4ba03c6e
+status: experimental
+description: |
+    Detects enumeration of network shares and active sessions with net view / net share / net session,
+    which attackers use to find reachable hosts and logged-on users for lateral movement.
+references:
+    - https://attack.mitre.org/techniques/T1135/
+    - https://attack.mitre.org/techniques/T1049/
+author: Hugo
+date: 2026-10-13
+tags:
+    - attack.t1135
+    - attack.t1049
+    - attack.discovery
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection:
+        Image|endswith:
+            - '\net.exe'
+            - '\net1.exe'
+        CommandLine|contains:
+            - 'view'
+            - 'share'
+            - 'session'
+    condition: selection
+falsepositives:
+    - Administrators browse shares and sessions routinely; use volume and context to triage.
+level: low

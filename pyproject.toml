@@ -1,0 +1,54 @@
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[project]
+name = "detection-as-code"
+version = "0.1.0"
+description = "Detection-as-code pipeline: Sigma rules linted, unit-tested, regression-tested against recorded ATT&CK telemetry, converted to SIEM queries and published with an ATT&CK coverage map."
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.11"
+authors = [{ name = "Hugo" }]
+keywords = ["detection-engineering", "sigma", "detection-as-code", "mitre-attack", "sysmon"]
+dependencies = [
+    "pysigma>=1.5,<2",
+    "pysigma-backend-splunk>=2.1",
+    "pysigma-backend-elasticsearch>=2.1",
+    "pysigma-backend-kusto>=1",
+    "pyyaml>=6.0",
+    "pandas>=2.2",
+    "matplotlib>=3.8",
+    "typer>=0.12",
+    "rich>=13.7",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0", "pytest-cov>=5.0", "ruff==0.17.0"]
+
+[project.scripts]
+dac = "dac.cli:app"
+
+[project.urls]
+Repository = "https://github.com/hugo-kte/detection-as-code"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/dac"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "SIM", "RUF", "N"]
+ignore = ["RUF001", "RUF002", "RUF003"]
+
+[tool.coverage.run]
+source = ["dac"]
+core = "sysmon"  # much faster on Python >= 3.12; older versions fall back to the C tracer

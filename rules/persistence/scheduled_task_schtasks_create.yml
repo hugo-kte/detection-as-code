@@ -1,0 +1,28 @@
+title: Scheduled Task Created via schtasks
+id: 8f088b12-8f81-4ed6-8c6d-e172ffbfc1c2
+status: experimental
+description: |
+    Detects the schtasks utility being used to create a task. Command-line creation is the route most
+    tools and interactive attackers take, and it is visible even where the scheduled-task audit log is
+    not configured. The rule keys on schtasks with the create verb.
+references:
+    - https://attack.mitre.org/techniques/T1053/005/
+author: Hugo
+date: 2026-10-13
+tags:
+    - attack.t1053.005
+    - attack.persistence
+    - attack.execution
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection:
+        Image|endswith: '\schtasks.exe'
+        CommandLine|contains:
+            - '/create'
+            - '/change'
+    condition: selection
+falsepositives:
+    - Administrative scripts and installers create tasks via schtasks; baseline task names.
+level: medium
