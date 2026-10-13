@@ -93,6 +93,16 @@ def test_regex_ignorecase_flag():
     assert not rule.event_matches(proc(CommandLine="ABCD"))
 
 
+@pytest.mark.parametrize(
+    ("flag", "pattern", "value"), [("m", "^b$", "a\nb\nc"), ("s", "a.c", "a\nc")]
+)
+def test_regex_multiline_and_dotall_flags(flag, pattern, value):
+    plain = compile_rule({"sel": {"CommandLine|re": pattern}, "condition": "sel"})
+    flagged = compile_rule({"sel": {f"CommandLine|re|{flag}": pattern}, "condition": "sel"})
+    assert flagged.event_matches(proc(CommandLine=value))
+    assert not plain.event_matches(proc(CommandLine=value))
+
+
 def test_windash_expands_dash_and_slash():
     rule = compile_rule({"sel": {"CommandLine|windash|contains": " -flag"}, "condition": "sel"})
     assert rule.event_matches(proc(CommandLine="tool /flag"))
@@ -101,7 +111,9 @@ def test_windash_expands_dash_and_slash():
     assert not rule.event_matches(proc(CommandLine="tool flag"))
 
 
-def test_base64offset_expansion():
+def test_base64_and_base64offset_expansions():
+    plain = compile_rule({"sel": {"CommandLine|base64|contains": "hello"}, "condition": "sel"})
+    assert plain.event_matches(proc(CommandLine="x aGVsbG8= y"))
     rule = compile_rule({"sel": {"CommandLine|base64offset|contains": "hello"}, "condition": "sel"})
     assert rule.event_matches(proc(CommandLine="x aGVsbG8 y"))  # base64("hello") at offset 0
     assert not rule.event_matches(proc(CommandLine="x hello y"))
@@ -160,6 +172,15 @@ def test_selectors_not_and_parentheses():
     assert both.event_matches(proc(CommandLine="aa bb")) and not both.event_matches(
         proc(CommandLine="aa")
     )
+
+
+def test_condition_list_is_or():
+    rule = compile_rule(
+        {"a": {"CommandLine": "aa"}, "b": {"CommandLine": "bb"}, "condition": ["a", "b"]}
+    )
+    assert rule.event_matches(proc(CommandLine="aa"))
+    assert rule.event_matches(proc(CommandLine="bb"))
+    assert not rule.event_matches(proc(CommandLine="cc"))
 
 
 def test_keyword_search_scans_every_field():

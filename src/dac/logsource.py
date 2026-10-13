@@ -77,8 +77,3 @@ def resolve(ls: SigmaLogSource) -> list[tuple[str, frozenset[int] | None]]:
             raise UnsupportedLogSourceError(f"unknown service '{ls.service}'")
         return [(channel, None) for channel in SERVICE_CHANNELS[ls.service]]
     raise UnsupportedLogSourceError("log source has neither category nor service")
-
-
-def channels(ls: SigmaLogSource) -> set[str]:
-    """The set of channels (lower-case) a log source can match."""
-    return {channel for channel, _ in resolve(ls)}

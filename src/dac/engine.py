@@ -9,7 +9,7 @@ Supported Sigma features: plain and wildcard strings (case-insensitive by defaul
 case-sensitive), ``contains`` / ``startswith`` / ``endswith``, ``all`` and value lists, ``not``,
 ``1 of`` / ``all of`` selectors, ``re`` (with ``i`` / ``m`` / ``s`` flags), ``cidr``, numeric
 comparisons (``lt`` / ``lte`` / ``gt`` / ``gte``), ``windash``, ``base64`` family expansions,
-``exists``, ``fieldref``, null values and keyword (field-less) searches.
+``exists``, ``fieldref``, null values, keyword (field-less) searches and condition lists (OR).
 """
 
 from __future__ import annotations
@@ -41,7 +41,7 @@ from sigma.types import (
     SigmaString,
 )
 
-from .logsource import FIELD_ALIASES
+from .logsource import FIELD_ALIASES, resolve
 
 # Internal (lower-cased channel, event id) added to every event; never matched as a user field.
 _META_FIELDS = frozenset({"__channel__", "__eventid__"})
@@ -252,15 +252,17 @@ class CompiledRule:
 
     def __init__(self, rule: SigmaRule):
         self.rule = rule
-        condition = rule.detection.parsed_condition[0].parse()
-        if condition is None:
-            raise ValueError(f"rule '{rule.title}' has an empty condition")
-        self._predicate = compile_condition(condition)
-        # Resolve the log source lazily to keep import-time failures out of compilation.
-        from .logsource import resolve
-
+        # The entries of a condition list are OR-ed (pySigma backends emit one query per entry).
+        predicates = []
+        for condition in rule.detection.parsed_condition:
+            tree = condition.parse()
+            if tree is None:
+                raise ValueError(f"rule '{rule.title}' has an empty condition")
+            predicates.append(compile_condition(tree))
+        self._predicate: EventPredicate = (
+            predicates[0] if len(predicates) == 1 else lambda e: any(p(e) for p in predicates)
+        )
         self.selectors = resolve(rule.logsource)
-        self._channels = {channel for channel, _ in self.selectors}
 
     def event_matches(self, event: dict[str, Any]) -> bool:
         """Does a single (already prepared) event satisfy the rule's log source and condition?"""
