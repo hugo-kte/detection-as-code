@@ -24,8 +24,9 @@ detection:
     filter_builtin_maintenance:
         SubjectUserName|endswith: '$'
         TaskName|startswith: '\Microsoft\Windows\'
-    filter_onedrive_updater:
-        TaskName|startswith: '\OneDrive Standalone Update Task'
+    filter_onedrive_updater:  # the task name is attacker-chosen: also require OneDrive's updater
+        TaskName|startswith: '\OneDrive Standalone Update Task-S-1-5-21-'
+        TaskContent|contains: '\Microsoft\OneDrive\OneDriveStandaloneUpdater.exe'
     condition: audit_event and not 1 of filter_*
 falsepositives:
     - Software installation and management tooling create scheduled tasks routinely; baseline by task

@@ -19,6 +19,18 @@ cases:
   event:
     TaskName: \Microsoft\Windows\Example\Task
     SubjectUserName: example-user
+- name: OneDrive's per-user updater task is filtered
+  match: false
+  event:
+    TaskName: \OneDrive Standalone Update Task-S-1-5-21-1-2-3-1001
+    TaskContent: <Exec><Command>%localappdata%\Microsoft\OneDrive\OneDriveStandaloneUpdater.exe</Command></Exec>
+    SubjectUserName: example-user
+- name: a task named like OneDrive's updater but running another program still alerts
+  match: true
+  event:
+    TaskName: \OneDrive Standalone Update Task-S-1-5-21-1-2-3-1001
+    TaskContent: <Exec><Command>C:\Users\Public\example.exe</Command></Exec>
+    SubjectUserName: example-user
 - name: other security event
   match: false
   event:

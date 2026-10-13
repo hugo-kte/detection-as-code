@@ -184,11 +184,11 @@
 - rule: scheduled_task_creation
   signature: 'EventID=4698 | TaskName=\OneDrive Standalone Update Task-S-1-5-21-1966984447-233561266-573182232-500 | SubjectUserName=user-account'
   verdict: benign
-  rationale: 'OneDrive''s per-user updater registering its task. Filtered by task name.'
+  rationale: 'OneDrive''s per-user updater registering its task. Filtered by task name and the updater binary its action runs.'
 - rule: scheduled_task_creation
   signature: 'EventID=4698 | TaskName=\OneDrive Standalone Update Task-S-1-5-21-4228717743-1032521047-1810997296-1106 | SubjectUserName=user-account'
   verdict: benign
-  rationale: 'OneDrive''s per-user updater registering its task. Filtered by task name.'
+  rationale: 'OneDrive''s per-user updater registering its task. Filtered by task name and the updater binary its action runs.'
 - rule: scheduled_task_creation
   signature: 'EventID=4702 | TaskName=\Microsoft\Windows\Application Experience\Microsoft Compatibility Appraiser | SubjectUserName=computer-account'
   verdict: benign

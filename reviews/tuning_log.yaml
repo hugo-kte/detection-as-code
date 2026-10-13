@@ -64,9 +64,13 @@
   kind: benign-filter
   change: >-
     Exclude built-in \Microsoft\Windows\ tasks registered or updated by the computer account, and
-    OneDrive's per-user updater task. A task registered by a user under \Microsoft\Windows\ still
-    alerts (the remote scheduled-task recording does exactly that).
-  evidence: 70 alerts in 14 signatures, all Windows maintenance (4702 updates, Update Orchestrator).
+    OneDrive's per-user updater task (task name AND the OneDriveStandaloneUpdater.exe action; the
+    first version matched the task name alone, which an attacker chooses, and was tightened in
+    review). A task registered by a user under \Microsoft\Windows\ still alerts (the remote
+    scheduled-task recording does exactly that).
+  evidence: >-
+    70 alerts in 14 signatures: Windows maintaining its built-in tasks (68: 4702 updates, Update
+    Orchestrator) and OneDrive registering its updater (2).
 
 - rule: lsass_memory_access
   kind: benign-filter
