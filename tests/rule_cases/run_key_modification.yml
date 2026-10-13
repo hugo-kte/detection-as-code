@@ -18,3 +18,8 @@ cases:
   event:
     Image: C:\Temp\example.exe
     TargetObject: HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Example
+- name: Teams registering its auto-start entry is filtered
+  match: false
+  event:
+    Image: C:\Users\example\AppData\Local\Microsoft\Teams\current\Teams.exe
+    TargetObject: HKU\S-1-5-21-1-2-3-1001\Software\Microsoft\Windows\CurrentVersion\Run\com.squirrel.Teams.Teams

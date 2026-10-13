@@ -19,3 +19,9 @@ cases:
   event:
     Image: C:\Windows\System32\cscript.exe
     CommandLine: x
+- name: built-in network diagnostics script is filtered
+  match: false
+  event:
+    ParentImage: C:\Windows\System32\netsh.exe
+    Image: C:\Windows\System32\cscript.exe
+    CommandLine: C:\Windows\system32\cscript.exe C:\Windows\system32\gatherNetworkInfo.vbs

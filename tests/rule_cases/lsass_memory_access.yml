@@ -35,3 +35,8 @@ cases:
     SourceImage: C:\Temp\example.exe
     TargetImage: C:\Windows\System32\notepad.exe
     GrantedAccess: '0x1410'
+- name: Azure guest agent log collector is filtered
+  match: false
+  event:
+    SourceImage: C:\WindowsAzure\GuestAgent_x\CollectGuestLogs.exe
+    GrantedAccess: '0x1410'
