@@ -22,7 +22,6 @@ detection:
             - 'Stop-Service'
             - 'Set-Service'
             - 'Suspend-Service'
-            - 'Disable-Service'
     target:
         ScriptBlockText|contains:
             - 'EventLog'

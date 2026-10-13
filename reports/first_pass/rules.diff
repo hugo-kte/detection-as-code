@@ -135,6 +135,14 @@ diff -ruN a/defense_evasion/eventlog_service_disabled_powershell.yml b/defense_e
  references:
      - https://attack.mitre.org/techniques/T1562/002/
  author: Hugo
+@@ -22,7 +22,6 @@
+             - 'Stop-Service'
+             - 'Set-Service'
+             - 'Suspend-Service'
+-            - 'Disable-Service'
+     target:
+         ScriptBlockText|contains:
+             - 'EventLog'
 diff -ruN a/defense_evasion/netsh_firewall_rule_added.yml b/defense_evasion/netsh_firewall_rule_added.yml
 --- a/defense_evasion/netsh_firewall_rule_added.yml	2026-10-13 13:03:09
 +++ b/defense_evasion/netsh_firewall_rule_added.yml	2026-10-13 13:03:10

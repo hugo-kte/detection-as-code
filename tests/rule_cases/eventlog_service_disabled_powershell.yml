@@ -11,3 +11,7 @@ cases:
   match: false
   event:
     ScriptBlockText: Stop-Service -Name Example
+- name: Disable-Service is not a PowerShell cmdlet (dead pattern removed)
+  match: false
+  event:
+    ScriptBlockText: Disable-Service -Name EventLog

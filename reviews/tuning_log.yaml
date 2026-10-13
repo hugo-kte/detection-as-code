@@ -55,6 +55,13 @@
     Found in code review after the first evaluation, not by the regression run: the recorded CMSTP
     execution carries both tokens, so no alert changed on this data.
 
+- rule: eventlog_service_disabled_powershell
+  kind: bug-fix
+  change: >-
+    Removed `Disable-Service` from the cmdlet list: PowerShell has no such cmdlet (a service is
+    disabled with Set-Service -StartupType Disabled, which the rule already matches).
+  evidence: Found in review; no script block in the recordings contains it, so no alert changed.
+
 - rule: dcsync_replication
   kind: benign-filter
   change: Exclude computer accounts (SubjectUserName ending in $).
