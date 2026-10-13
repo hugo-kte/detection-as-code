@@ -26,6 +26,11 @@ def test_registry_keys_mask_sids_guids_and_raw_hive_names():
     assert normalise("TargetObject", key) == "HKU\\<SID>\\Software\\<GUID>\\V"
 
 
+def test_html_escaped_values_are_unescaped():
+    assert normalise("TargetImage", "&lt;unknown process&gt;") == "<unknown process>"
+    assert command_verb("tool.exe &lt;arg&gt; x") == "<arg>"
+
+
 def test_accounts_reduce_to_their_type():
     assert normalise("SubjectUserName", "DC01$") == "computer-account"
     assert normalise("SubjectUserName", "alice") == "user-account"

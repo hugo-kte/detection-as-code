@@ -282,7 +282,7 @@ covered.
 git clone https://github.com/hugo-kte/detection-as-code.git && cd detection-as-code
 make install
 make rules-lint            # pySigma validators + project checks
-make test                  # 197 tests, no dataset needed
+make test                  # 199 tests, no dataset needed
 make convert               # SPL / Lucene / ES|QL / KQL -> reports/queries/
 make download              # 214 pinned files (~61 MB) from OTRF Security-Datasets, SHA-1 verified
 make evaluate              # detection matrix, metrics, report, figures -> reports/

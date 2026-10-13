@@ -47,7 +47,7 @@
 
 # --- create_remote_thread_injection
 - rule: create_remote_thread_injection
-  signature: 'SourceImage=iexplore.exe | TargetImage=&lt;unknown process&gt;'
+  signature: 'SourceImage=iexplore.exe | TargetImage=<unknown process>'
   verdict: attack
   technique: T1055
   rationale: 'Remote thread created from the DCOM-launched Internet Explorer after the iertutil.dll hijack loaded the implant (the recording is labelled with the DCOM step).'
@@ -57,7 +57,7 @@
   technique: T1055
   rationale: 'WMI provider host, compromised through the wbemcomn.dll hijack, injecting a thread into a spawned notepad (the recording is labelled with the WMI step).'
 - rule: create_remote_thread_injection
-  signature: 'SourceImage=wuauclt.exe | TargetImage=&lt;unknown process&gt;'
+  signature: 'SourceImage=wuauclt.exe | TargetImage=<unknown process>'
   verdict: attack
   technique: T1055
   rationale: 'wuauclt.exe proxy-loads a DLL that then creates a remote thread; the recording is labelled only with the proxy-execution technique (T1218).'

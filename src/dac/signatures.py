@@ -9,6 +9,7 @@ Command lines and script content are deliberately never part of a signature.
 
 from __future__ import annotations
 
+import html
 import re
 from typing import Any
 
@@ -74,7 +75,8 @@ def _account(value: str) -> str:
 def normalise(field: str, value: Any) -> str:
     if value is None:
         return "-"
-    text = str(value)
+    # The recordings HTML-escape some values (TargetImage "&lt;unknown process&gt;").
+    text = html.unescape(str(value))
     if field in _IMAGE_FIELDS:
         return _basename(text)
     if field == "TargetObject":
@@ -97,7 +99,7 @@ def command_verb(command_line: Any) -> str:
     ``"C:\\Windows\\System32\\reg.exe" save HKLM\\SAM x`` -> ``save``; a bare interactive shell
     -> ``-``. Paths and long tokens collapse to placeholders to keep signatures low-cardinality.
     """
-    text = str(command_line or "").strip()
+    text = html.unescape(str(command_line or "")).strip()
     if text.startswith('"'):
         end = text.find('"', 1)
         rest = text[end + 1 :] if end > 0 else ""
