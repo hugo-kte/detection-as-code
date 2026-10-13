@@ -8,7 +8,8 @@ import pytest
 
 from conftest import RULES
 from dac.coverage import build_layer
-from dac.evaluate import evaluate, expected_match, metrics
+from dac.engine import CompiledRule
+from dac.evaluate import evaluate, expected_match, explain_miss, metrics
 from dac.report import write_figures, write_matrix, write_metrics, write_report
 from dac.rules import load_rules
 
@@ -23,6 +24,16 @@ def test_expected_match_counts_sub_techniques_under_their_parent():
     assert expected_match({"T1003.002"}, {"T1003", "T1003.001"})  # shared parent T1003
     assert not expected_match({"T1547.001"}, {"T1003", "T1003.001"})
     assert not expected_match({"T1547.001"}, set())
+
+
+def test_miss_reason_checks_the_event_ids_a_service_rule_reads():
+    share = CompiledRule(
+        next(lr.rule for lr in load_rules(RULES) if lr.path.stem == "admin_share_access")
+    )
+    logons_only = {("security", 4624), ("security", None)}  # Security events, but no 5145
+    assert explain_miss(logons_only, [share]) == "required telemetry absent"
+    with_shares = logons_only | {("security", 5145)}
+    assert explain_miss(with_shares, [share]) == "telemetry present, no rule matched"
 
 
 def test_duplicate_recording_is_scored_once(result):

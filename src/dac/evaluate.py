@@ -194,9 +194,13 @@ def evaluate(
 
 
 def explain_miss(present: Telemetry, expected: list[CompiledRule]) -> str:
-    """Why an in-scope recording was missed: the telemetry is absent, or no rule matched it."""
+    """Why an in-scope recording was missed: the telemetry is absent, or no rule matched it.
+
+    Telemetry counts as present when the recording holds at least one event of a type (channel and
+    event id) that one of the expected rules reads.
+    """
     for rule in expected:
-        for channel, event_ids in rule.selectors:
+        for channel, event_ids in rule.telemetry:
             if event_ids is None and (channel, None) in present:
                 return "telemetry present, no rule matched"
             if event_ids is not None and any((channel, e) in present for e in event_ids):

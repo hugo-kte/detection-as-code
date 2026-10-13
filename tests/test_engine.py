@@ -183,6 +183,15 @@ def test_condition_list_is_or():
     assert not rule.event_matches(proc(CommandLine="cc"))
 
 
+def test_service_rule_telemetry_uses_the_event_ids_of_its_detection():
+    service = compile_rule(
+        {"sel": {"EventID": [4698, 4702]}, "condition": "sel"}, {"service": "security"}
+    )
+    assert service.telemetry == [("security", frozenset({4698, 4702}))]
+    category = compile_rule({"sel": {"Image|endswith": "\\a.exe"}, "condition": "sel"})
+    assert category.telemetry == category.selectors
+
+
 def test_keyword_search_scans_every_field():
     rule = compile_rule({"kw": ["needle"], "condition": "kw"})
     assert rule.event_matches(proc(Description="hay needle hay"))

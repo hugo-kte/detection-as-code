@@ -26,7 +26,7 @@ from sigma.conditions import (
     ConditionOR,
     ConditionValueExpression,
 )
-from sigma.rule import SigmaRule
+from sigma.rule import SigmaDetection, SigmaDetectionItem, SigmaRule
 from sigma.types import (
     SigmaBool,
     SigmaCasedString,
@@ -247,6 +247,25 @@ def _compile_keyword(value: Any) -> EventPredicate:
     return lambda e: any(scalar_pred(v) for v in _all_scalar_values(e))
 
 
+def detection_event_ids(rule: SigmaRule) -> frozenset[int]:
+    """Every ``EventID`` value written in a rule's detection (where ``service`` rules select it)."""
+    found: set[int] = set()
+
+    def walk(item: SigmaDetection | SigmaDetectionItem) -> None:
+        if isinstance(item, SigmaDetection):
+            for sub in item.detection_items:
+                walk(sub)
+        elif item.field == "EventID":
+            for value in item.value:
+                text = str(value.number) if isinstance(value, SigmaNumber) else str(value)
+                if text.isdigit():
+                    found.add(int(text))
+
+    for detection in rule.detection.detections.values():
+        walk(detection)
+    return frozenset(found)
+
+
 class CompiledRule:
     """A rule compiled to an event predicate plus the events it should be evaluated against."""
 
@@ -263,6 +282,10 @@ class CompiledRule:
             predicates[0] if len(predicates) == 1 else lambda e: any(p(e) for p in predicates)
         )
         self.selectors = resolve(rule.logsource)
+        # The (channel, event ids) the rule reads, used to explain misses. A ``service`` log source
+        # selects a whole channel; such rules name their event ids in the detection instead.
+        named = detection_event_ids(rule) or None
+        self.telemetry = [(c, ids if ids is not None else named) for c, ids in self.selectors]
 
     def event_matches(self, event: dict[str, Any]) -> bool:
         """Does a single (already prepared) event satisfy the rule's log source and condition?"""
