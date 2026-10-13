@@ -7,6 +7,7 @@ from pathlib import Path
 import pytest
 
 from conftest import RULES
+from dac.attack import ATTACK_VERSION
 from dac.coverage import build_layer
 from dac.engine import CompiledRule
 from dac.evaluate import evaluate, expected_match, explain_miss, metrics, strict_match
@@ -130,5 +131,6 @@ def test_coverage_layer_scores(result):
     assert scores["T1547.001"] == 3  # rule validated on a recording
     assert scores["T1003.002"] == 2  # rule exists, no labelled recording here
     assert layer["domain"] == "enterprise-attack"
+    assert layer["versions"]["attack"] == ATTACK_VERSION
     unscored = build_layer(load_rules(RULES))
     assert {t["score"] for t in unscored["techniques"]} == {2}

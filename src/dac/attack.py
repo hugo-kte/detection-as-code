@@ -12,6 +12,10 @@ Corporation under the terms at https://attack.mitre.org/resources/legal-and-bran
 
 from __future__ import annotations
 
+# ATT&CK Enterprise release whose technique names and tactics this table follows (recorded in the
+# Navigator layer). The OTRF labels predate it; every technique they use still exists in it.
+ATTACK_VERSION = "16"
+
 # ATT&CK tactic id -> Sigma tag short-name (as used in `attack.<short-name>` rule tags).
 TACTICS: dict[str, str] = {
     "TA0001": "initial-access",

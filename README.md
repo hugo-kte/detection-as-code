@@ -335,7 +335,7 @@ MIT License, by Roberto Rodriguez ([@Cyb3rWard0g](https://github.com/Cyb3rWard0g
 ([@Cyb3rPandaH](https://github.com/Cyb3rPandaH)) and contributors, pinned at commit
 `d9d40ef123d2c87d5d3df28c96bcab4f0faccc87`. The data are downloaded by `make download` and never
 committed; only the labels' technique IDs are used, and the scenario descriptions in the upstream
-metadata are not copied here. Technique names and IDs are from [MITRE ATT&CK®](https://attack.mitre.org/).
+metadata are not copied here. Technique names and IDs are from [MITRE ATT&CK®](https://attack.mitre.org/) Enterprise v16.
 Rules and test events in this repository describe what to detect, not how to perform an attack.
 
 Code and rules: [MIT](LICENSE).

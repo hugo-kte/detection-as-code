@@ -1,11 +1,18 @@
 {
   "name": "detection-as-code coverage",
   "versions": {
+    "attack": "16",
     "layer": "4.5",
     "navigator": "5.1.0"
   },
   "domain": "enterprise-attack",
   "description": "Sigma rules of hugo-kte/detection-as-code, scored by validation against recorded ATT&CK telemetry (OTRF Security-Datasets).",
+  "metadata": [
+    {
+      "name": "ATT&CK version",
+      "value": "Enterprise v16"
+    }
+  ],
   "filters": {
     "platforms": [
       "Windows"

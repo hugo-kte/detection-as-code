@@ -72,12 +72,13 @@ def build_layer(loaded: list[LoadedRule], metrics: dict[str, Any] | None = None)
 
     return {
         "name": "detection-as-code coverage",
-        "versions": {"layer": "4.5", "navigator": "5.1.0"},
+        "versions": {"attack": attack.ATTACK_VERSION, "layer": "4.5", "navigator": "5.1.0"},
         "domain": "enterprise-attack",
         "description": (
             "Sigma rules of hugo-kte/detection-as-code, scored by validation against recorded "
             "ATT&CK telemetry (OTRF Security-Datasets)."
         ),
+        "metadata": [{"name": "ATT&CK version", "value": f"Enterprise v{attack.ATTACK_VERSION}"}],
         "filters": {"platforms": ["Windows"]},
         "sorting": 3,
         "layout": {"layout": "side", "showName": True, "showID": True},
