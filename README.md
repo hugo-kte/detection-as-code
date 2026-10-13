@@ -22,7 +22,7 @@ filtered, with the before/after numbers below.
 | | First pass (rules as written) | After fixes and filters |
 |---|---:|---:|
 | Attack recordings detected by a rule of their technique | 75 / 97 (77.3%) | **70 / 97 (72.2%)** |
-| Recordings with at least one alert from any rule | 89 / 97 | 76 / 97 |
+| In-scope recordings with an alert from any rule | 89 / 97 | 76 / 97 |
 | Alerts on the 113 recordings | 499 | 309 |
 | ... on the labelled technique | 274 | 243 |
 | ... off-target but real attack activity (reviewed) | 72 | 66 |
@@ -45,37 +45,40 @@ miss, every signature with its verdict, every rule) is in [`reports/REPORT.md`](
    SAM-hive rule fired on `reg.exe` command lines that merely touched a key under `HKLM\SYSTEM`.
    A fifth rule matched `ShareName|contains: 'C$'`, which is also true of `IPC$`, the named-pipe
    share every RPC client uses: 45 alerts. `dac lint` now rejects duplicate keys, and each bug
-   has a regression test.
+   has a regression test. Data does not catch everything either: a later code review found that
+   the CMSTP rule's value list `['/s', '.inf']` meant OR where its description says AND (its unit
+   test had been written to the code). It changed no result here and is logged as a bug fix.
 2. **The first-pass detection rate was inflated.** Five of its 75 detections (remote service
    control over SMB) came only from the `IPC$` bug: right technique, wrong reason. After the fix
    they are honest misses, which is why the rate *drops* from 77.3% to 72.2% while precision
    improves.
-3. **A third of first-pass alerts were noise.** The 153 false positives were Windows maintaining
-   its own scheduled tasks (70), `IPC$` (45), the Azure guest agent, boot-time handles and WMI
-   queries opening LSASS (13), a monitoring agent's scripts (10), interactive shells (6),
-   domain-controller replication (3), Defender or Teams registering autostart entries (3) and
-   Windows network diagnostics reading registry keys (3). Apart from the two bugs, each source
-   was filtered narrowly (writer path **and** value name, computer account **and** built-in task
-   path, ...). The 0
-   after tuning is in-sample: the filters were written from these recordings, so it is not a
-   false-positive rate for any other environment.
+3. **A third of first-pass alerts were noise.** The 153 false positives were Windows and OneDrive
+   maintaining their scheduled tasks (70), `IPC$` (45), the Azure guest agent, boot-time handles
+   and WMI queries opening LSASS (13), a monitoring agent's scripts (9), interactive shells (6),
+   Windows network diagnostics running a script and `reg.exe` (4), domain-controller replication
+   (3) and Defender or Teams registering autostart entries (3). Apart from the two bugs, each
+   source was filtered narrowly (writer path **and** value name, computer account **and** built-in
+   task path, task name **and** the program it runs, ...). The 0 after tuning is in-sample: the
+   filters were written from these recordings, so it is not a false-positive rate for any other
+   environment.
 4. **Off-target is not the same as false.** 66 alerts fire on recordings labelled with another
    technique but are real attack activity. Empire's stager is a PowerShell download cradle,
-   visible in the 14 Empire recordings that have script-block logging; a DLL-hijack scenario
+   visible in the 14 Empire recordings whose script-block logs captured it; a DLL-hijack scenario
    stages its payload over `C$`; a "WMI execution" recording actually creates a WMI event
    subscription. Counting them as false positives would punish correct rules for the coarseness
    of dataset-level labels.
 5. **Misses are explained, not hidden.** Of the 27 misses, 3 recordings lack the event types the
-   expected rules read (no process-creation or script-block events), and 24 have them but use a mechanism no rule
-   covers: API-based credential theft (Mimikatz over LSARPC/SAMR, Rubeus), DCOM through Office
-   without a child process, remote service control seen only as RPC on the `svcctl` pipe.
+   expected rules read (no process-creation or script-block events), and 24 have them but use a
+   mechanism no rule covers, for example API-based credential theft (Mimikatz over LSARPC/SAMR,
+   Rubeus), DCOM through Office without a child process, or remote service control seen only as
+   RPC on the `svcctl` pipe.
 
 ## How it works
 
 ```mermaid
 flowchart LR
     R["rules/*.yml<br/>41 Sigma rules"] --> L["dac lint<br/>pySigma validators<br/>+ project checks"]
-    L --> T["dac test<br/>108 synthetic cases"]
+    L --> T["dac test<br/>115 synthetic cases"]
     T --> E["dac evaluate<br/>113 recordings, 774k events"]
     E --> V{"off-target<br/>alert?"}
     V -- yes --> S["signature + analyst verdict<br/>reviews/off_target.yaml"]
@@ -90,7 +93,7 @@ flowchart LR
   and runs it on the flat JSON events. It supports the Sigma features the rules use and a few
   more: wildcards, `contains` / `startswith` / `endswith`, `all`, `cased`, `re` (with `i`, `m`,
   `s`), `windash`, the `base64` family, `cidr`, numeric comparisons, `exists`, `fieldref`, null
-  values, keyword searches, `1 of` / `all of` and `not`. Each feature has a test.
+  values, keyword searches, `1 of` / `all of`, `not` and condition lists. Each feature has a test.
 * **Log sources** ([`logsource.py`](src/dac/logsource.py)). Generic categories map to concrete
   `(channel, event id)` pairs (`process_creation` is Sysmon 1 or Security 4688,
   `registry_set` is Sysmon 13, `ps_script` is PowerShell 4104...); `service` log sources map to a
@@ -162,6 +165,8 @@ platform.
 * **Detected** means at least one of those rules fired on at least one event of the recording.
   A miss is explained as *telemetry absent* (none of the expected rules' event types is in the
   recording) or *no rule matched*.
+* **Alerts** are matching events. A process start logged both by Sysmon (event 1) and by Security
+  auditing (4688) counts as two alerts, as it would in a SIEM that ingests both.
 * **Off-target alerts** (a rule firing on a recording not labelled with its technique) are
   grouped into signatures and each signature gets a verdict, `benign` or `attack`, with a one-line
   rationale. `dac evaluate` flags any unreviewed signature.
@@ -250,7 +255,7 @@ covered.
 git clone https://github.com/hugo-kte/detection-as-code.git && cd detection-as-code
 make install
 make rules-lint            # pySigma validators + project checks
-make test                  # 184 tests, no dataset needed
+make test                  # 196 tests, no dataset needed
 make convert               # SPL / Lucene / ES|QL / KQL -> reports/queries/
 make download              # 214 pinned files (~61 MB) from OTRF Security-Datasets, SHA-1 verified
 make evaluate              # detection matrix, metrics, report, figures -> reports/
@@ -275,7 +280,7 @@ verdict to any new off-target signature in `reviews/off_target.yaml`.
 
 ```text
 rules/<tactic>/*.yml         41 Sigma rules
-tests/rule_cases/*.yml       108 synthetic must-match / must-not-match events, one file per rule
+tests/rule_cases/*.yml       115 synthetic must-match / must-not-match events, one file per rule
 reviews/off_target.yaml      analyst verdict for every off-target alert signature
 reviews/tuning_log.yaml      every change made after the first evaluation, and why
 src/dac/
